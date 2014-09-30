@@ -5,6 +5,8 @@ It is for lathe. Only X and Z axis are plotted.
 
 It works for Sinumerik code 810 and 840d.
 
+Just select some lines of code and click the toolbar button: ![toolbar button](src/org/roiderh/gcode/Drehwerkzeug_24x24.png "toolbar button")
+
 A screenshot:
 ![Screenshot](screen.png "screenshot of a g-code file with contour")
 
