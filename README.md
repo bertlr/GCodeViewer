@@ -5,3 +5,6 @@ It is for lathe. Only X and Z axis are plotted.
 
 It works for Sinumerik code 810 and 840d.
 
+A screenshot:
+![Screenshot](screen.png "screenshot of a g-code file with contour")
+
