@@ -477,7 +477,7 @@ public class gcodereader {
                          */
                         if (current_ce.shape == contourelement.Shape.ARC) {
                                 CircleArc2D c1 = geo.createCircleArc(current_ce.start, current_ce.end, current_ce.radius, current_ce.ccw);
-                                Polyline2D pl = c1.asPolyline(4);
+                                Polyline2D pl = c1.asPolyline(10);
                                 for (Point2D p : pl.vertices()) {
                                         disp.add(p);
                                 }
@@ -489,7 +489,7 @@ public class gcodereader {
                          Append the transition element to the current element for display: 
                          */
                         if (current_ce.transistion_elem == contourelement.Transition.ROUND) {
-                                Polyline2D pl = ((CircleArc2D) transition).asPolyline(4);
+                                Polyline2D pl = ((CircleArc2D) transition).asPolyline(10);
                                 for (Point2D p : pl.vertices()) {
                                         disp.add(p);
                                 }
