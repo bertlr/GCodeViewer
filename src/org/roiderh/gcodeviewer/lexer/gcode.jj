@@ -19,6 +19,8 @@
 
 /home/herbert/archiv/javacc-5.0/bin/javacc gcode.jj
 
+javacc version 5.0 is used
+
 
 */
 options
