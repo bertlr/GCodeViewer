@@ -195,7 +195,7 @@ public final class ContourTopComponent extends TopComponent {
                 double y_fact = (double) canvas_height * 0.9 / (double) y_size;
                 double fact = Math.min(x_fact, y_fact);
 
-                // vergrössern:
+                // zoom to the max. size to show the complete contour:
                 for (int i = 0; i < this.disp.size(); i++) {
                         x_points[i] *= fact;
                         y_points[i] *= fact;
@@ -205,9 +205,7 @@ public final class ContourTopComponent extends TopComponent {
                 Graphics2D g2d = (Graphics2D) g;
 
                 AffineTransform at = new AffineTransform();
-                //at.quadrantRotate(4);
-                //at.setToRotation(Math.PI / 4.0);
-                //g2d.transform(at);
+                // move the toolpath to the center of the canvas:
                 at.setToTranslation(((double) canvas_width) / 2.0 - (double) x_middle * fact, ((double) canvas_height / 2.0) - (double) y_middle * fact);
                 g2d.transform(at);
 
