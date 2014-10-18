@@ -125,7 +125,7 @@ public final class ContourTopComponent extends TopComponent {
         }
 
         public void drawGraph() {
-                System.out.println("hallo ContourComponent");
+                //System.out.println("hallo ContourComponent");
 
         }
 
