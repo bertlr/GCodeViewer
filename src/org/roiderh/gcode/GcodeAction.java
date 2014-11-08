@@ -27,22 +27,13 @@ import org.openide.windows.TopComponent;
 import java.util.Set;
 
 import org.openide.cookies.LineCookie;
-import java.io.File;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.Document;
-import java.lang.ProcessBuilder.Redirect;
-import java.lang.Process;
-import java.util.Map;
-import java.io.IOException;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import org.roiderh.gcodeviewer.gcodereader;
-import org.roiderh.gcodeviewer.point;
 import math.geom2d.Point2D;
-import org.roiderh.gcode.ContourTopComponent;
 
 @ActionID(
         category = "Edit",
