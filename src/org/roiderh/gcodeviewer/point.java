@@ -14,33 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.roiderh.gcodeviewer ;
+package org.roiderh.gcodeviewer;
+
 import math.geom2d.Point2D;
 
 /**
  *
  * @author Herbert Roider <herbert.roider@utanet.at>
  */
-public class point implements Cloneable{
+public class point implements Cloneable {
 
         public double x;
         public double y;
+
+        @Override
         public point clone() throws CloneNotSupportedException {
                 return (point) super.clone();
         }
-        public boolean equals(point p){
-                if(this == p){
+
+        public boolean equals(point p) {
+                if (this == p) {
                         return true;
                 }
-                if(!(p instanceof point)){
+                if (!(p instanceof point)) {
                         return false;
                 }
-                return (x == p.x) 
+                return (x == p.x)
                         && (y == p.y);
-                
+
         }
-        public Point2D createPoint2D(){
+
+        public Point2D createPoint2D() {
                 return new Point2D(this.x, this.y);
         }
-        
+
 }
