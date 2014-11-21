@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
 OpenIDE-Module: org.roiderh.gcode
 OpenIDE-Module-Localizing-Bundle: org/roiderh/gcode/Bundle.properties
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
