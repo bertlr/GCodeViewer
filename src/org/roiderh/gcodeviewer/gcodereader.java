@@ -56,7 +56,7 @@ public class gcodereader {
     public Collection<String> messages = null;
 
     public LinkedList<Point2D> read(InputStream is) throws Exception {
-                //FileInputStream is;
+        //FileInputStream is;
         //FileOutputStream os;
         this.messages = new HashSet<>();
         boolean G0 = false;
@@ -83,7 +83,7 @@ public class gcodereader {
         geometry geo = new geometry();
 
         Map<Integer, Double> R = new HashMap<>();
-                //Pattern floatstring = Pattern.compile("(=)?(-)?([0-9])*.?([0-9])*");
+        //Pattern floatstring = Pattern.compile("(=)?(-)?([0-9])*.?([0-9])*");
         //Pattern integerstring = Pattern.compile("(=)?(-)?([0-9])+");
         point last_pos = null;
         point current_pos = new point();
@@ -95,7 +95,7 @@ public class gcodereader {
         G2 = false;
         G3 = false;
 
-                //try {
+        //try {
         //os = new FileOutputStream(new File("/home/herbert/NetBeansProjects/gcodeviewer/src/gcodeviewer/punkte.txt"));
         Token t;
         BufferedReader br;
@@ -110,7 +110,7 @@ public class gcodereader {
             if (semicolon_pos >= 0) {
                 line = line.substring(0, semicolon_pos);
             }
-                        // if the first character of a line is a brace, 
+            // if the first character of a line is a brace, 
             // the complete line is interpreted as a comment. For old sinumerik 810
             int first_brace_pos = line.trim().indexOf("(");
             if (first_brace_pos == 0) {
@@ -123,17 +123,15 @@ public class gcodereader {
             CHR = 0.0;
             RND = 0.0;
             CR = 0.0;
-            
+
             G0 = false;
             G1 = false;
             G2 = false;
             G3 = false;
-           
-            
+
             istream = new ByteArrayInputStream(line.getBytes());
             Gcodereader gr = new Gcodereader(istream);
-            
- 
+
             /*
              read one line
              */
@@ -217,13 +215,13 @@ public class gcodereader {
 
                                     break;
                                 case "Y":
-                                                                        //myParser.addFunction("IC", new IncAbs(0, true)); // Add the custom function
+                                    //myParser.addFunction("IC", new IncAbs(0, true)); // Add the custom function
                                     //myParser.addFunction("AC", new IncAbs(Y, false)); // Add the custom function
 
                                     break;
 
                                 case "J":
-                                                                        //myParser.addFunction("IC", new IncAbs(Y, true)); // Add the custom function
+                                    //myParser.addFunction("IC", new IncAbs(Y, true)); // Add the custom function
                                     //myParser.addFunction("AC", new IncAbs(0, false)); // Add the custom function
 
                                     break;
@@ -326,14 +324,16 @@ public class gcodereader {
                     }
 
                 } else if (machine == 1) {
+                    // only at G1 a transition element, not at G2/G3 because B is interpreted as radius
+                    if (G1) {
+                        if (B > 0.0) {
+                            c_elem.transition_elem_size = B;
+                            c_elem.transistion_elem = contourelement.Transition.ROUND;
+                        } else if (B < 0.0) {
+                            c_elem.transition_elem_size = -B;
+                            c_elem.transistion_elem = contourelement.Transition.CHAMFER;
 
-                    if (B > 0.0) {
-                        c_elem.transition_elem_size = B;
-                        c_elem.transistion_elem = contourelement.Transition.ROUND;
-                    } else if (B < 0.0) {
-                        c_elem.transition_elem_size = -B;
-                        c_elem.transistion_elem = contourelement.Transition.CHAMFER;
-
+                        }
                     }
                 }
                 // Movement G0, G1, G2, G3
@@ -346,17 +346,17 @@ public class gcodereader {
                         ccw = true;
                     }
                     double r = 0.0;
-                    if (CR == 0.0) {
+                    switch (machine) {
+                        case 0:
+                            r = CR;
+                            break;
+                        case 1:
+                            r = B;
+                            break;
+                    }
+
+                    if (r == 0.0) {
                         r = Math.sqrt(Math.pow((0.5 * I), 2.0) + Math.pow(K, 2.0));
-                    } else {
-                        switch (machine) {
-                            case 0:
-                                r = CR;
-                                break;
-                            case 1:
-                                r = B;
-                                break;
-                        }
                     }
 
                     //c_elem.points = geo.circle(last_pos, current_pos, r, ccw);
@@ -364,7 +364,7 @@ public class gcodereader {
                     c_elem.points.add(current_pos.clone());
                     c_elem.radius = r;
                     c_elem.ccw = ccw;
-                                        // no Transition Element at G2 or G3
+                    // no Transition Element at G2 or G3
                     //c_elem.transition_elem_size = 0.0;
                     c_elem.shape = contourelement.Shape.ARC;
                     c_elem.feed = contourelement.Feed.CUTTING;
@@ -413,7 +413,7 @@ public class gcodereader {
         LinkedList<Point2D> disp = new LinkedList<>();
         contourelement current_ce = null;
 
-                // calculate the transitions elements and the result vertexes and tangent points.
+        // calculate the transitions elements and the result vertexes and tangent points.
         // Also add points to the display contour, which is simple a chain of lines.
         for (contourelement next_ce : contour) {
             // First contour element:
