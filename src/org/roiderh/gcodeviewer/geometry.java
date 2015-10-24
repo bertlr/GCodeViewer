@@ -500,7 +500,7 @@ public class geometry {
                 System.out.println(b1.toString());
                 System.out.println(b2.toString());
 
-                if (b1.toString().indexOf("CircleArc2D") >= 0) {
+                if (b1.toString().contains("CircleArc2D") ) {
                         CircleArc2D geo = (CircleArc2D) b1;
                         inter_1 = Circle2D.circlesIntersections(geo.supportingCircle(), circle);
                 } else {
@@ -509,7 +509,7 @@ public class geometry {
 
                 }
 
-                if (b2.toString().indexOf("CircleArc2D") >= 0) {
+                if (b2.toString().contains("CircleArc2D") ) {
                         CircleArc2D geo = (CircleArc2D) b2;
                         inter_2 = Circle2D.circlesIntersections(geo.supportingCircle(), circle);
                 } else {
@@ -564,7 +564,7 @@ public class geometry {
                 Collection<AbstractSmoothCurve2D> parallelLines_1 = new HashSet<>();
                 Collection<AbstractSmoothCurve2D> parallelLines_2 = new HashSet<>();
 
-                if (b1.toString().indexOf("CircleArc2D") >= 0) {
+                if (b1.toString().contains("CircleArc2D") ) {
                         CircleArc2D geo = (CircleArc2D) b1;
                         CircleArc2D b1i = geo.parallel(-radius);
                         CircleArc2D b1o = geo.parallel(radius);
@@ -582,7 +582,7 @@ public class geometry {
                         //inter_1 = Circle2D.lineCircleIntersections(geo.supportingLine(), circle);
                 }
 
-                if (b2.toString().indexOf("CircleArc2D") >= 0) {
+                if (b2.toString().contains("CircleArc2D") ) {
                         CircleArc2D geo = (CircleArc2D) b2;
                         CircleArc2D b1i = geo.parallel(-radius);
                         CircleArc2D b1o = geo.parallel(radius);
@@ -608,9 +608,9 @@ public class geometry {
                         for (AbstractSmoothCurve2D c2 : parallelLines_2) {
                                 Collection<Point2D> inter_new;
 
-                                if (c1.toString().indexOf("CircleArc2D") >= 0) {
+                                if (c1.toString().contains("CircleArc2D") ) {
                                         CircleArc2D geo1 = (CircleArc2D) c1;
-                                        if (c2.toString().indexOf("CircleArc2D") >= 0) {
+                                        if (c2.toString().contains("CircleArc2D") ) {
                                                 CircleArc2D geo2 = (CircleArc2D) c2;
                                                 inter_new = Circle2D.circlesIntersections(geo1.supportingCircle(), geo2.supportingCircle());
 
@@ -622,7 +622,7 @@ public class geometry {
 
                                 } else {
                                         LineSegment2D geo1 = (LineSegment2D) c1;
-                                        if (c2.toString().indexOf("CircleArc2D") >= 0) {
+                                        if (c2.toString().contains("CircleArc2D") ) {
                                                 CircleArc2D geo2 = (CircleArc2D) c2;
                                                 inter_new = Circle2D.lineCircleIntersections(geo1.supportingLine(), geo2.supportingCircle());
 
@@ -676,7 +676,7 @@ public class geometry {
                  Intersection of a ray from the contour element center to the round center point with the contour element.
                  This is the tangent point.
                  */
-                if (b1.toString().indexOf("CircleArc2D") >= 0) {
+                if (b1.toString().contains("CircleArc2D") ) {
 
                         CircleArc2D geo = (CircleArc2D) b1;
                         Point2D geo_center = geo.supportingCircle().center();
@@ -696,7 +696,7 @@ public class geometry {
 
                 }
 
-                if (b2.toString().indexOf("CircleArc2D") >= 0) {
+                if (b2.toString().contains("CircleArc2D") ) {
 
                         CircleArc2D geo = (CircleArc2D) b2;
                         Point2D geo_center = geo.supportingCircle().center();

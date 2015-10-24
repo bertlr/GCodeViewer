@@ -33,11 +33,7 @@ import org.roiderh.gcodeviewer.customfunc.IncAbs;
 import math.geom2d.Point2D;
 import math.geom2d.polygon.Polyline2D;
 import math.geom2d.conic.CircleArc2D;
-import math.geom2d.line.Line2D;
 import math.geom2d.line.LineSegment2D;
-import math.geom2d.line.Ray2D;
-//import org.roiderh.gcodeviewer.geometry.geometry;
-import math.geom2d.AffineTransform2D;
 import math.geom2d.curve.AbstractSmoothCurve2D;
 import java.util.Collection;
 import java.util.HashSet;
@@ -124,11 +120,6 @@ public class gcodereader {
             RND = 0.0;
             CR = 0.0;
 
-            G0 = false;
-            G1 = false;
-            G2 = false;
-            G3 = false;
-
             istream = new ByteArrayInputStream(line.getBytes());
             Gcodereader gr = new Gcodereader(istream);
 
@@ -142,18 +133,28 @@ public class gcodereader {
                 parameter para = null;
                 if (t.kind == GcodereaderConstants.G) {
                     String sNumber = t.image.substring(1, t.image.length());
-                    if (Integer.parseInt(sNumber) == 0) {
-                        G0 = true;
+                    int g_number = Integer.parseInt(sNumber);
+                    if (g_number <= 3) {
+                        G0 = false;
+                        G1 = false;
+                        G2 = false;
+                        G3 = false;
 
-                    } else if (Integer.parseInt(sNumber) == 1) {
-                        G1 = true;
+                        switch (g_number) {
+                            case 0:
+                                G0 = true;
+                                break;
+                            case 1:
+                                G1 = true;
+                                break;
+                            case 2:
+                                G2 = true;
+                                break;
+                            case 3:
+                                G3 = true;
+                                break;
 
-                    } else if (Integer.parseInt(sNumber) == 2) {
-                        G2 = true;
-
-                    } else if (Integer.parseInt(sNumber) == 3) {
-                        G3 = true;
-
+                        }
                     }
 
                 }

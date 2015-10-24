@@ -25,10 +25,11 @@ import math.geom2d.Point2D;
  */
    
 public class contourelement {
-        // Übergang Fase oder Rundung
+        // shape of the transition element:
         public enum Transition {
                 CHAMFER, ROUND
         }
+        // G0/G1 for lines and G2/G3 for arc
         public enum Shape {
                 LINE, ARC
         }
@@ -41,17 +42,20 @@ public class contourelement {
         public Point2D start;
         // calculated end point with transition element:
         public Point2D end;
-        // Transition Element between the current and the next element:
+        // Transition Element chamfer or round between the current and the next element
         public Transition transistion_elem;
+        // line or arc
         public Shape shape;
         public double transition_elem_size;
+        // only rapid (G0) or cutting (G1)
         public Feed feed;
         // the real linenumber, not N-number or Lable
         public int linenumber;
         /**
-         * If the shape was a arc (circle), the radius and the rotation direction:
+         * If the shape was a arc (circle), the radius (CR or B)
          */
         public double radius; 
+        // for arc, ccw (counter clockwise) is true for G3, ccw=false for G2
         public boolean ccw = true;
         
 
