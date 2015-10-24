@@ -77,7 +77,7 @@ public class gcodereader {
         int linenumber = 0;
 
         geometry geo = new geometry();
-
+        // R Parameters:
         Map<Integer, Double> R = new HashMap<>();
         //Pattern floatstring = Pattern.compile("(=)?(-)?([0-9])*.?([0-9])*");
         //Pattern integerstring = Pattern.compile("(=)?(-)?([0-9])+");
@@ -115,6 +115,7 @@ public class gcodereader {
             // The parser needs an line break:
             line += '\n';
             System.out.println("line=" + line);
+            // Parameters are not modal:
             B = 0.0;
             CHR = 0.0;
             RND = 0.0;
@@ -205,14 +206,14 @@ public class gcodereader {
                         if (last_pos != null) {
                             switch (para.name) {
                                 case "X":
-                                    myParser.addFunction("IC", new IncAbs(last_pos.y * 2, true)); // Add the custom function
+                                    myParser.addFunction("IC", new IncAbs(X, true)); // Add the custom function
                                     //myParser.addFunction("AC", new IncAbs(X, false)); // Add the custom function
 
                                     break;
 
                                 case "I":
                                     //myParser.addFunction("IC", new IncAbs(X, true)); // Add the custom function
-                                    myParser.addFunction("AC", new IncAbs(last_pos.y * 2, false)); // Add the custom function
+                                    myParser.addFunction("AC", new IncAbs(X, false)); // Add the custom function
 
                                     break;
                                 case "Y":
@@ -227,14 +228,14 @@ public class gcodereader {
 
                                     break;
                                 case "Z":
-                                    myParser.addFunction("IC", new IncAbs(last_pos.x, true)); // Add the custom function
+                                    myParser.addFunction("IC", new IncAbs(Z, true)); // Add the custom function
                                     //myParser.addFunction("AC", new IncAbs(Z, false)); // Add the custom function
 
                                     break;
 
                                 case "K":
                                     //myParser.addFunction("IC", new IncAbs(Z, true)); // Add the custom function
-                                    myParser.addFunction("AC", new IncAbs(last_pos.x, false)); // Add the custom function
+                                    myParser.addFunction("AC", new IncAbs(Z, false)); // Add the custom function
 
                                     break;
 
