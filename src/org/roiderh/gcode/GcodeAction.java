@@ -119,36 +119,9 @@ public final class GcodeAction implements ActionListener {
                 }
 
                 panel.disp = disp;
+                panel.c_elements = contour;
                 panel.repaint();
 
-//                JRootPane panel = 
-//                Surface s = new Surface();
-//                s.disp = disp;
-//                add(s);
-//
-//                setSize(500, 500);
-//                setLocationRelativeTo(null);
-//                
-//                ProcessBuilder pb
-//                        = new ProcessBuilder("paraview", "myArg1", "myArg2");
-//                Map<String, String> env = pb.environment();
-////                env.put("VAR1", "myValue");
-////                env.remove("OTHERVAR");
-////                env.put("VAR2", env.get("VAR1") + "suffix");
-//                pb.directory(new File("/home/herbert"));
-//                File log = new File("log");
-//                pb.redirectErrorStream(true);
-//                pb.redirectOutput(Redirect.appendTo(log));
-//                try {
-//                        Process p = pb.start();
-//                        assert pb.redirectInput() == Redirect.PIPE;
-//                        assert pb.redirectOutput().file() == log;
-//                        assert p.getInputStream().read() == -1;
-//                } catch (IOException exception) {
-//
-//                }
-//                NotifyDescriptor d
-//                        = new NotifyDescriptor.Message("Hello...", NotifyDescriptor.INFORMATION_MESSAGE);
-//                DialogDisplayer.getDefault().notify(d);
+
         }
 }
