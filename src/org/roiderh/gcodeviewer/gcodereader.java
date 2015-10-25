@@ -31,12 +31,11 @@ import java.util.regex.*;
 import java.util.LinkedList;
 import org.roiderh.gcodeviewer.customfunc.IncAbs;
 import math.geom2d.Point2D;
-import math.geom2d.polygon.Polyline2D;
-import math.geom2d.conic.CircleArc2D;
 import math.geom2d.line.LineSegment2D;
 import math.geom2d.curve.AbstractSmoothCurve2D;
 import java.util.Collection;
 import java.util.HashSet;
+import math.geom2d.polygon.LinearCurve2D;
 
 /**
  *
@@ -51,7 +50,7 @@ public class gcodereader {
      */
     public Collection<String> messages = null;
 
-    public LinkedList<Point2D> read(InputStream is) throws Exception {
+    public LinkedList<contourelement> read(InputStream is) throws Exception {
         //FileInputStream is;
         //FileOutputStream os;
         this.messages = new HashSet<>();
@@ -62,6 +61,10 @@ public class gcodereader {
         double X = Double.MAX_VALUE;
         double Y = Double.MAX_VALUE;
         double Z = Double.MAX_VALUE;
+
+        double X_prev = X;
+        double Y_prev = Y;
+        double Z_prev = Z;
 
         // circle Centerpoint coordinates relative to the startpoint
         double I = Double.MAX_VALUE;
@@ -120,6 +123,10 @@ public class gcodereader {
             CHR = 0.0;
             RND = 0.0;
             CR = 0.0;
+
+            X_prev = X;
+            Y_prev = Y;
+            Z_prev = Z;
 
             istream = new ByteArrayInputStream(line.getBytes());
             Gcodereader gr = new Gcodereader(istream);
@@ -297,103 +304,107 @@ public class gcodereader {
 
             } while (!(t.kind == GcodereaderConstants.EOF));
 
+            // when no movement, continue
+            if (X_prev == X && Z_prev == Z) {
+                continue;
+            }
             //System.out.println("Break ");
-            if (G0 || G1 || G2 || G3) {
-                System.out.println("Verfahrbefehl");
-                if (Z == Double.MAX_VALUE || X == Double.MAX_VALUE) {
-                    CalcException newExcept = new CalcException("X or Z is undefined");
-                    throw newExcept;
+            //if (G0 || G1 || G2 || G3) {
+            System.out.println("Verfahrbefehl");
+            if (Z == Double.MAX_VALUE || X == Double.MAX_VALUE) {
+                CalcException newExcept = new CalcException("X and Z value are necessary for the first point");
+                throw newExcept;
+            }
+            current_pos.x = Z;
+            current_pos.y = X / 2.0;
+            if (last_pos == null) {
+                last_pos = current_pos.clone();
+            }
+
+            contourelement c_elem = new contourelement();
+            c_elem.linenumber = linenumber;
+
+            // Transition Element:
+            if (machine == 0) {
+
+                if (RND > 0.0) {
+                    c_elem.transition_elem_size = RND;
+                    c_elem.transistion_elem = contourelement.Transition.ROUND;
+                } else if (CHR > 0.0) {
+                    c_elem.transition_elem_size = CHR;
+                    c_elem.transistion_elem = contourelement.Transition.CHAMFER;
+
                 }
-                current_pos.x = Z;
-                current_pos.y = X / 2.0;
-                if (last_pos == null) {
-                    last_pos = current_pos.clone();
-                }
 
-                contourelement c_elem = new contourelement();
-                c_elem.linenumber = linenumber;
-
-                // Transition Element:
-                if (machine == 0) {
-
-                    if (RND > 0.0) {
-                        c_elem.transition_elem_size = RND;
+            } else if (machine == 1) {
+                // only at G1 a transition element, not at G2/G3 because B is interpreted as radius
+                if (G1) {
+                    if (B > 0.0) {
+                        c_elem.transition_elem_size = B;
                         c_elem.transistion_elem = contourelement.Transition.ROUND;
-                    } else if (CHR > 0.0) {
-                        c_elem.transition_elem_size = CHR;
+                    } else if (B < 0.0) {
+                        c_elem.transition_elem_size = -B;
                         c_elem.transistion_elem = contourelement.Transition.CHAMFER;
 
                     }
-
-                } else if (machine == 1) {
-                    // only at G1 a transition element, not at G2/G3 because B is interpreted as radius
-                    if (G1) {
-                        if (B > 0.0) {
-                            c_elem.transition_elem_size = B;
-                            c_elem.transistion_elem = contourelement.Transition.ROUND;
-                        } else if (B < 0.0) {
-                            c_elem.transition_elem_size = -B;
-                            c_elem.transistion_elem = contourelement.Transition.CHAMFER;
-
-                        }
-                    }
                 }
-                // Movement G0, G1, G2, G3
-                if (G2 | G3) {
-                    boolean ccw = false;
-                    // clockwise or counterclockwise
-                    if (G2) {
-                        ccw = false;
-                    } else {
-                        ccw = true;
-                    }
-                    double r = 0.0;
-                    switch (machine) {
-                        case 0:
-                            r = CR;
-                            break;
-                        case 1:
-                            r = B;
-                            break;
-                    }
-
-                    if (r == 0.0) {
-                        r = Math.sqrt(Math.pow((0.5 * I), 2.0) + Math.pow(K, 2.0));
-                    }
-
-                    //c_elem.points = geo.circle(last_pos, current_pos, r, ccw);
-                    c_elem.points.add(last_pos.clone());
-                    c_elem.points.add(current_pos.clone());
-                    c_elem.radius = r;
-                    c_elem.ccw = ccw;
-                    // no Transition Element at G2 or G3
-                    //c_elem.transition_elem_size = 0.0;
-                    c_elem.shape = contourelement.Shape.ARC;
-                    c_elem.feed = contourelement.Feed.CUTTING;
-
-                    //}
-                } else if (G1) {
-                    //points.add(current_pos.clone());
-                    c_elem.points.add(last_pos.clone());
-                    c_elem.points.add(current_pos.clone());
-                    c_elem.shape = contourelement.Shape.LINE;
-                    c_elem.feed = contourelement.Feed.CUTTING;
-
-                } else if (G0) {
-                    //points.add(current_pos.clone());
-                    c_elem.points.add(last_pos.clone());
-                    c_elem.points.add(current_pos.clone());
-                    c_elem.shape = contourelement.Shape.LINE;
-                    c_elem.feed = contourelement.Feed.RAPID;
-                    c_elem.transition_elem_size = 0.0;
-
-                }
-                // add point only when movement
-                if (!last_pos.equals(current_pos) || contour.size() == 0) {
-                    contour.add(c_elem);
-                }
-                last_pos = current_pos.clone();
             }
+            // Movement G0, G1, G2, G3
+            if (G2 | G3) {
+                boolean ccw = false;
+                // clockwise or counterclockwise
+                if (G2) {
+                    ccw = false;
+                } else {
+                    ccw = true;
+                }
+                double r = 0.0;
+                switch (machine) {
+                    case 0:
+                        r = CR;
+                        break;
+                    case 1:
+                        r = B;
+                        break;
+                }
+
+                if (r == 0.0) {
+                    r = Math.sqrt(Math.pow((0.5 * I), 2.0) + Math.pow(K, 2.0));
+                }
+
+                //c_elem.points = geo.circle(last_pos, current_pos, r, ccw);
+                c_elem.points.add(last_pos.clone());
+                c_elem.points.add(current_pos.clone());
+                c_elem.radius = r;
+                c_elem.ccw = ccw;
+                // no Transition Element at G2 or G3
+                //c_elem.transition_elem_size = 0.0;
+                c_elem.shape = contourelement.Shape.ARC;
+                c_elem.feed = contourelement.Feed.CUTTING;
+
+                //}
+            } else if (G1) {
+                //points.add(current_pos.clone());
+                c_elem.points.add(last_pos.clone());
+                c_elem.points.add(current_pos.clone());
+                c_elem.shape = contourelement.Shape.LINE;
+                c_elem.feed = contourelement.Feed.CUTTING;
+
+            } else if (G0) {
+                //points.add(current_pos.clone());
+                c_elem.points.add(last_pos.clone());
+                c_elem.points.add(current_pos.clone());
+                c_elem.shape = contourelement.Shape.LINE;
+                c_elem.feed = contourelement.Feed.RAPID;
+                c_elem.transition_elem_size = 0.0;
+
+            }
+            // add point only when movement
+            if (!last_pos.equals(current_pos) || contour.size() == 0) {
+                contour.add(c_elem);
+            }
+            last_pos = current_pos.clone();
+            //}
 
         }
 
@@ -407,6 +418,7 @@ public class gcodereader {
         c_elem.transition_elem_size = 0.0;
         c_elem.start = last_pos.createPoint2D();
         c_elem.end = current_pos.createPoint2D();
+
         contour.add(c_elem);
 
         // Create Contour points to display from Program Lines:
@@ -457,6 +469,7 @@ public class gcodereader {
                 break;
 
             }
+            current_ce.curve = current;
 
             /*
              calculate the transition element and the new vertexes for the 2 elements:
@@ -475,37 +488,94 @@ public class gcodereader {
                 }
                 current_ce.end = transition.firstPoint();
                 next_ce.start = transition.lastPoint();
+                current_ce.transition_curve = transition;
 
             }
 
+            // Calculate the element with transition element:
+            if (current_ce.shape == contourelement.Shape.ARC) {
+                current_ce.curve = geo.createCircleArc(current_ce.start, current_ce.end, current_ce.radius, current_ce.ccw);
+            } else {
+                current_ce.curve = new LineSegment2D(current_ce.start, current_ce.end);
+            }
+
+            current_ce = next_ce;
+        }
+
+        System.out.println("Contur without transition elements");
+        for (contourelement ce : contour) {
+
+            for (point p : ce.points) {
+                System.out.println("x=" + p.x + ", y=" + p.y);
+
+            }
+
+        }
+        if (this.messages.size() > 0) {
+            for (String s : this.messages) {
+                System.out.println(s);
+            }
+
+        }
+
+        return contour;
+    }
+
+    /**
+     * create a list with all edge points to display. Circles are returned as
+     * multiple points.
+     *
+     * @param contour
+     * @return list with all points
+     */
+    public LinkedList<Point2D> create_display_points(LinkedList<contourelement> contour) {
+        geometry geo = new geometry();
+        LinkedList<Point2D> disp = new LinkedList<>();
+
+        // calculate the transitions elements and the result vertexes and tangent points.
+        // Also add points to the display contour, which is simple a chain of lines.
+        for (contourelement current_ce : contour) {
+
+            if (current_ce.curve == null) {
+                continue;
+            }
             /*
              Add the current element to the contour as multiple lines.
              */
             if (current_ce.shape == contourelement.Shape.ARC) {
-                CircleArc2D c1 = geo.createCircleArc(current_ce.start, current_ce.end, current_ce.radius, current_ce.ccw);
-                Polyline2D pl = c1.asPolyline(10);
-                for (Point2D p : pl.vertices()) {
+                LinearCurve2D c1 = current_ce.curve.asPolyline(10);
+                //Polyline2D pl = c1;
+                for (Point2D p : c1.vertices()) {
                     disp.add(p);
                 }
             } else {
-                disp.add(current_ce.end);
+                LinearCurve2D c1 = current_ce.curve.asPolyline(1);
+                //Polyline2D pl = c1;
+                for (Point2D p : c1.vertices()) {
+                    disp.add(p);
+                }
 
             }
             /*
              Append the transition element to the current element for display: 
              */
-            if (current_ce.transistion_elem == contourelement.Transition.ROUND) {
-                Polyline2D pl = ((CircleArc2D) transition).asPolyline(10);
-                for (Point2D p : pl.vertices()) {
-                    disp.add(p);
+            if (current_ce.transition_elem_size > 0) {
+                if (current_ce.transistion_elem == contourelement.Transition.ROUND) {
+                    LinearCurve2D pl = current_ce.transition_curve.asPolyline(10);
+                    for (Point2D p : pl.vertices()) {
+                        disp.add(p);
+                    }
+
+                } else if (current_ce.transistion_elem == contourelement.Transition.CHAMFER) {
+                    LinearCurve2D pl = current_ce.transition_curve.asPolyline(1);
+                    for (Point2D p : pl.vertices()) {
+                        disp.add(p);
+                    }
+
                 }
-
-            } else if (current_ce.transistion_elem == contourelement.Transition.CHAMFER) {
-                disp.add(transition.lastPoint());
-
             }
 
-            current_ce = next_ce;
+            //current_ce = next_ce;
         }
 
         System.out.println("Contur without transition elements");
@@ -529,8 +599,7 @@ public class gcodereader {
 //
 //                }
         return disp;
-        //System.setIn(is);
-//java.io.InputStream stream; 
+
     }
 
 }

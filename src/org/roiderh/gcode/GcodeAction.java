@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import org.roiderh.gcodeviewer.gcodereader;
 import math.geom2d.Point2D;
+import org.roiderh.gcodeviewer.contourelement;
 
 @ActionID(
         category = "Edit",
@@ -81,11 +82,13 @@ public final class GcodeAction implements ActionListener {
                 // parse the String
                 //FileInputStream is;
                 LinkedList<Point2D> disp = null;
+                LinkedList<contourelement> contour;
                 try {
 
                         //is = new FileInputStream(new File("/home/herbert/NetBeansProjects/gcodeviewer/src/org/roiderh/gcodeviewer/gcode.txt"));
                         gcodereader gr = new gcodereader();
-                        disp = gr.read(is);
+                        contour = gr.read(is);
+                        disp = gr.create_display_points(contour);
 
                 } catch (Exception e1) {
                         System.out.println("Error " + e1.toString());
