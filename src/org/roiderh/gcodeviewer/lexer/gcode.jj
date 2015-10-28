@@ -32,7 +32,7 @@ options
 
   STATIC = false;
   COMMON_TOKEN_ACTION = false;
-  JDK_VERSION = "1.5";
+  JDK_VERSION = "1.7";
   LOOKAHEAD = 1;
   
 }
@@ -54,12 +54,14 @@ TOKEN_MGR_DECLS :
 SKIP : { " " | "\t" | "\r" | "\n" }
 
 <DEFAULT>
-// ignore Linenumbers and Labels: "N10" or "MY_LABEL:"
+// ignore Linenumbers and Labels: "N10" or "MY_LABEL:" and the filename
 SKIP: 
 {
         <LABEL: (["A"-"Z","0"-"9","_","-"])+ (":") 
       |
        ("N")(["0"-"9"])+
+    |
+        ("%")(("MPF")|("SPF"))(" ")*(["0"-"9"])+(("\n")|("\r"))
 >
 
 }
@@ -72,7 +74,7 @@ SKIP:
 { 
    < PARAM : ( (["A"-"Z","0"-"9",")"]) ( (" ")+ (["A"-"Z","0"-"9"])))
    |
-   (("\n")|("\r"))
+   (("\n")|("\r")|(";"))
     
 >  { matchedToken.image = image.toString().substring(0, image.toString().length()-1); matchedToken.image.trim(); input_stream.backup(1); } : DEFAULT 
 
