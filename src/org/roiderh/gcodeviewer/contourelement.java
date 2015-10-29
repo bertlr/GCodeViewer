@@ -18,7 +18,7 @@ package org.roiderh.gcodeviewer;
 
 import java.util.LinkedList;
 import math.geom2d.Point2D;
-import math.geom2d.curve.AbstractSmoothCurve2D;
+import math.geom2d.circulinear.CirculinearElement2D;
 
 /**
  *
@@ -60,8 +60,8 @@ public class contourelement {
         public boolean ccw = true;
         
         // The element as curve (line or arc) with transition element
-        public  AbstractSmoothCurve2D curve;
+        public  CirculinearElement2D curve;
         // The transition element as curve (line or arc)
-        public  AbstractSmoothCurve2D transition_curve;
+        public  CirculinearElement2D transition_curve;
 
 }

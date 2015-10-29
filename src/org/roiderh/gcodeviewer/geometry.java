@@ -25,9 +25,9 @@ import math.geom2d.conic.CircleArc2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.line.LineSegment2D;
 import math.geom2d.line.Ray2D;
-import math.geom2d.curve.AbstractSmoothCurve2D;
 import math.geom2d.line.StraightLine2D;
 import java.util.HashSet;
+import math.geom2d.circulinear.CirculinearElement2D;
 
 /**
  *
@@ -485,7 +485,7 @@ public class geometry {
          * @param length size of the chamfer
          * @return a LineSegment2D which is the chamfer
          */
-        public LineSegment2D getChamfer(AbstractSmoothCurve2D b1, AbstractSmoothCurve2D b2, double length) {
+        public LineSegment2D getChamfer(CirculinearElement2D b1, CirculinearElement2D b2, double length) {
                 Point2D vertex = b1.lastPoint();
                 Circle2D circle = new Circle2D(vertex, length);
                 Collection<Point2D> inter_1;
@@ -556,13 +556,13 @@ public class geometry {
          * @param radius size of the round
          * @return a CircleArc2D which is the round
          */
-        public CircleArc2D getRound(AbstractSmoothCurve2D b1, AbstractSmoothCurve2D b2, double radius) {
+        public CircleArc2D getRound(CirculinearElement2D b1, CirculinearElement2D b2, double radius) {
                 //Point2D vertex = b1.lastPoint();
                 //Circle2D circle = new Circle2D(vertex, radius);
                 //Collection<Point2D> inter_1;
                 //Collection<Point2D> inter_2;
-                Collection<AbstractSmoothCurve2D> parallelLines_1 = new HashSet<>();
-                Collection<AbstractSmoothCurve2D> parallelLines_2 = new HashSet<>();
+                Collection<CirculinearElement2D> parallelLines_1 = new HashSet<>();
+                Collection<CirculinearElement2D> parallelLines_2 = new HashSet<>();
 
                 if (b1.toString().contains("CircleArc2D") ) {
                         CircleArc2D geo = (CircleArc2D) b1;
@@ -604,8 +604,8 @@ public class geometry {
                  Find all possible intersections of the parallel lines
                  */
                 Collection<Point2D> inter = new HashSet<>();
-                for (AbstractSmoothCurve2D c1 : parallelLines_1) {
-                        for (AbstractSmoothCurve2D c2 : parallelLines_2) {
+                for (CirculinearElement2D c1 : parallelLines_1) {
+                        for (CirculinearElement2D c2 : parallelLines_2) {
                                 Collection<Point2D> inter_new;
 
                                 if (c1.toString().contains("CircleArc2D") ) {
@@ -642,14 +642,14 @@ public class geometry {
                 Collection<Point2D> inter_1 = new HashSet<>();
                 for (Point2D p : inter) {
                         int found = 0;
-                        for (AbstractSmoothCurve2D c : parallelLines_1) {
+                        for (CirculinearElement2D c : parallelLines_1) {
                                 if (c.contains(p)) {
                                         found++;
                                         break;
                                 }
 
                         }
-                        for (AbstractSmoothCurve2D c : parallelLines_2) {
+                        for (CirculinearElement2D c : parallelLines_2) {
                                 if (c.contains(p)) {
                                         found++;
                                         break;

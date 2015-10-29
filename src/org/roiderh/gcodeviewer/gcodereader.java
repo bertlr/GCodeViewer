@@ -35,6 +35,7 @@ import math.geom2d.line.LineSegment2D;
 import math.geom2d.curve.AbstractSmoothCurve2D;
 import java.util.Collection;
 import java.util.HashSet;
+import math.geom2d.circulinear.CirculinearElement2D;
 import math.geom2d.polygon.LinearCurve2D;
 
 /**
@@ -442,9 +443,9 @@ public class gcodereader {
             current_ce.end = current_ce.points.getLast().createPoint2D();
             next_ce.start = current_ce.end;
 
-            AbstractSmoothCurve2D current = null;
-            AbstractSmoothCurve2D next = null;
-            AbstractSmoothCurve2D transition = null;
+            CirculinearElement2D current = null;
+            CirculinearElement2D next = null;
+            CirculinearElement2D transition = null;
             /*
              calculate the current and the next element without the transition element:
              */
