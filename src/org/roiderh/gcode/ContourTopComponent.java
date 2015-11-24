@@ -21,7 +21,6 @@ import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
 import java.util.LinkedList;
 import math.geom2d.AffineTransform2D;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -29,7 +28,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
-import org.roiderh.gcodeviewer.point;
 import math.geom2d.Point2D;
 import math.geom2d.line.Line2D;
 import org.roiderh.gcodeviewer.contourelement;
@@ -168,8 +166,8 @@ public final class ContourTopComponent extends TopComponent {
         double y_size = 0;
         for (int i = 0; i < this.disp.size(); i++) {
 
-            x_points[i] = (double) (this.disp.get(i).x());
-            y_points[i] = (double) (this.disp.get(i).y());
+            x_points[i] = this.disp.get(i).x();
+            y_points[i] = this.disp.get(i).y();
             if (i == 0) {
                 x_max = x_points[i];
                 x_min = x_points[i];
@@ -204,8 +202,8 @@ public final class ContourTopComponent extends TopComponent {
             y_size = 1;
         }
 
-        double x_fact = (double) canvas_width * 0.9 / (double) x_size;
-        double y_fact = (double) canvas_height * 0.9 / (double) y_size;
+        double x_fact = (double) canvas_width * 0.9 /  x_size;
+        double y_fact = (double) canvas_height * 0.9 /  y_size;
         double fact = Math.min(x_fact, y_fact);
 
         // vergrössern:
