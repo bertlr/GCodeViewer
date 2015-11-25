@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import math.geom2d.circulinear.CirculinearElement2D;
 import math.geom2d.polygon.LinearCurve2D;
+import org.roiderh.gcodeviewer.customfunc.SinCosTan;
 
 /**
  *
@@ -249,7 +250,16 @@ public class gcodereader {
 
                             }
                         }
-
+                        myParser.addFunction("SIN", new SinCosTan(SinCosTan.Function.SIN));
+                        myParser.addFunction("COS", new SinCosTan(SinCosTan.Function.COS));
+                        myParser.addFunction("TAN", new SinCosTan(SinCosTan.Function.TAN));
+                        myParser.addFunction("ASIN", new SinCosTan(SinCosTan.Function.ASIN));
+                        myParser.addFunction("ACOS", new SinCosTan(SinCosTan.Function.ACOS));
+                        myParser.addFunction("ATAN", new SinCosTan(SinCosTan.Function.ATAN));
+                        myParser.addFunction("ATAN2", new SinCosTan(SinCosTan.Function.ATAN2));                      
+                        myParser.addFunction("SQRT", new SinCosTan(SinCosTan.Function.SQRT));
+                        myParser.addFunction("POT", new SinCosTan(SinCosTan.Function.POT));
+                                               
                         for (Map.Entry<Integer, Double> entry : R.entrySet()) {
                             myParser.addVariable("R" + entry.getKey().toString(), entry.getValue());
                         }
