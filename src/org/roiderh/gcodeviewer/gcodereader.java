@@ -138,6 +138,9 @@ public class gcodereader {
              */
             do {
                 t = gr.getNextToken();
+                if (t.kind == GcodereaderConstants.EOF) {
+                    break;
+                }
                 System.out.println("Token: " + t.kind + ", " + t.image);
                 Matcher m;
                 parameter para = null;
@@ -256,10 +259,10 @@ public class gcodereader {
                         myParser.addFunction("ASIN", new SinCosTan(SinCosTan.Function.ASIN));
                         myParser.addFunction("ACOS", new SinCosTan(SinCosTan.Function.ACOS));
                         myParser.addFunction("ATAN", new SinCosTan(SinCosTan.Function.ATAN));
-                        myParser.addFunction("ATAN2", new SinCosTan(SinCosTan.Function.ATAN2));                      
+                        myParser.addFunction("ATAN2", new SinCosTan(SinCosTan.Function.ATAN2));
                         myParser.addFunction("SQRT", new SinCosTan(SinCosTan.Function.SQRT));
                         myParser.addFunction("POT", new SinCosTan(SinCosTan.Function.POT));
-                                               
+
                         for (Map.Entry<Integer, Double> entry : R.entrySet()) {
                             myParser.addVariable("R" + entry.getKey().toString(), entry.getValue());
                         }
