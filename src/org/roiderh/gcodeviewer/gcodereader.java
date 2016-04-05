@@ -181,7 +181,10 @@ public class gcodereader {
                 if (para == null) {
                     continue;
                 }
-
+                if (para.name.compareTo("A") == 0) {
+                    CalcException newExcept = new CalcException("\"A\" is not supported in line: " + String.valueOf(linenumber));
+                    throw newExcept;
+                }
                 if (para.name.compareTo("R") == 0) {
                     org.nfunk.jep.JEP myParser = new org.nfunk.jep.JEP();
                     myParser.addStandardFunctions();
