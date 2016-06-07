@@ -32,7 +32,6 @@ import java.util.LinkedList;
 import org.roiderh.gcodeviewer.customfunc.IncAbs;
 import math.geom2d.Point2D;
 import math.geom2d.line.LineSegment2D;
-import math.geom2d.curve.AbstractSmoothCurve2D;
 import java.util.Collection;
 import java.util.HashSet;
 import math.geom2d.circulinear.CirculinearElement2D;
@@ -91,7 +90,7 @@ public class gcodereader {
         // All points to display:
         LinkedList<point> points = new LinkedList<>();
         LinkedList<contourelement> contour = new LinkedList<>();
-        G0 = false;
+        G0 = true;
         G1 = false;
         G2 = false;
         G3 = false;
