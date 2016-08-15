@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import org.roiderh.gcodeviewer.gcodereader;
 import math.geom2d.Point2D;
+import org.openide.awt.ActionReferences;
 import org.roiderh.gcodeviewer.contourelement;
 
 @ActionID(
@@ -44,24 +45,28 @@ import org.roiderh.gcodeviewer.contourelement;
         displayName = "#CTL_GcodeAction",
         iconBase = "org/roiderh/gcode/Drehwerkzeug_24x24.png"
 )
-@ActionReference(path = "Toolbars/File", position = 0)
-@Messages("CTL_GcodeAction=Show Contour from selected G-Code")
+@ActionReferences({
+    @ActionReference(path = "Toolbars/File", position = 0),
+    @ActionReference(path = "Editors/text/plain/Popup"),
+    @ActionReference(path = "Editors/text/x-nc/Popup")
+})
+
 public final class GcodeAction implements ActionListener {
 
-        private LineCookie context;
-        private JTextComponent editor;
-        // private StyledDocument document;
-        private String selectedText;
-        private String stringToBeInserted;
+    private LineCookie context;
+    private JTextComponent editor;
+    // private StyledDocument document;
+    private String selectedText;
+    private String stringToBeInserted;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-                JTextComponent ed = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();
-                if (ed == null) {
-                        JOptionPane.showMessageDialog(null, "Error: no open editor");
-                        return;
-                }
+        JTextComponent ed = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();
+        if (ed == null) {
+            JOptionPane.showMessageDialog(null, "Error: no open editor");
+            return;
+        }
 //                Document doc = ed.getDocument();
 //                if (doc == null) {
 //                        JOptionPane.showMessageDialog(null, "No open Document");
@@ -69,59 +74,58 @@ public final class GcodeAction implements ActionListener {
 //                }
 //                System.out.println(doc.getLength());
 
-                this.selectedText = ed.getSelectedText();
+        this.selectedText = ed.getSelectedText();
 
-                System.out.println("Selected Text:");
-                System.out.println(this.selectedText);
-                if (selectedText == null) {
-                        JOptionPane.showMessageDialog(null, "no selected G-Code");
-                        return;
-                }               // convert String into InputStream
-                InputStream is = new ByteArrayInputStream(this.selectedText.getBytes());
+        System.out.println("Selected Text:");
+        System.out.println(this.selectedText);
+        if (selectedText == null) {
+            JOptionPane.showMessageDialog(null, "no selected G-Code");
+            return;
+        }               // convert String into InputStream
+        InputStream is = new ByteArrayInputStream(this.selectedText.getBytes());
 
-                // parse the String
-                //FileInputStream is;
-                LinkedList<Point2D> disp = null;
-                LinkedList<contourelement> contour;
-                try {
+        // parse the String
+        //FileInputStream is;
+        LinkedList<Point2D> disp = null;
+        LinkedList<contourelement> contour;
+        try {
 
-                        //is = new FileInputStream(new File("/home/herbert/NetBeansProjects/gcodeviewer/src/org/roiderh/gcodeviewer/gcode.txt"));
-                        gcodereader gr = new gcodereader();
-                        contour = gr.read(is);
-                        disp = gr.create_display_points(contour);
+            //is = new FileInputStream(new File("/home/herbert/NetBeansProjects/gcodeviewer/src/org/roiderh/gcodeviewer/gcode.txt"));
+            gcodereader gr = new gcodereader();
+            contour = gr.read(is);
+            disp = gr.create_display_points(contour);
 
-                } catch (Exception e1) {
-                        System.out.println("Error " + e1.toString());
-                        JOptionPane.showMessageDialog(null, "Error: " + e1.toString());
-                        return;
-
-                }
-
-                System.out.println("ready calculated Contur:");
-                for (Point2D p : disp) {
-                        System.out.println("x=" + p.x() + ", y=" + p.y());
-
-                }
-
-                // Update the Contour
-                Set<TopComponent> windows = org.openide.windows.TopComponent.getRegistry().getOpened();
-                ContourTopComponent panel = null;
-                for (TopComponent tc : windows) {
-                        System.out.println("class name found: " + tc.getClass().getSimpleName());
-                        if (tc.getClass().getSimpleName().equals("ContourTopComponent")) {
-                                System.out.println("class name found: " + tc.getClass().getSimpleName());
-                                panel = (ContourTopComponent) tc;
-
-                        }
-                }
-                if (panel == null) {
-                        return;
-                }
-
-                panel.disp = disp;
-                panel.c_elements = contour;
-                panel.repaint();
-
+        } catch (Exception e1) {
+            System.out.println("Error " + e1.toString());
+            JOptionPane.showMessageDialog(null, "Error: " + e1.toString());
+            return;
 
         }
+
+        System.out.println("ready calculated Contur:");
+        for (Point2D p : disp) {
+            System.out.println("x=" + p.x() + ", y=" + p.y());
+
+        }
+
+        // Update the Contour
+        Set<TopComponent> windows = org.openide.windows.TopComponent.getRegistry().getOpened();
+        ContourTopComponent panel = null;
+        for (TopComponent tc : windows) {
+            System.out.println("class name found: " + tc.getClass().getSimpleName());
+            if (tc.getClass().getSimpleName().equals("ContourTopComponent")) {
+                System.out.println("class name found: " + tc.getClass().getSimpleName());
+                panel = (ContourTopComponent) tc;
+
+            }
+        }
+        if (panel == null) {
+            return;
+        }
+
+        panel.disp = disp;
+        panel.c_elements = contour;
+        panel.repaint();
+
+    }
 }

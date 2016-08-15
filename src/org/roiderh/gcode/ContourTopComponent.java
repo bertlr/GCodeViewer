@@ -27,7 +27,6 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
-import org.openide.util.NbBundle.Messages;
 import math.geom2d.Point2D;
 import math.geom2d.line.Line2D;
 import org.roiderh.gcodeviewer.contourelement;
@@ -41,7 +40,7 @@ import org.roiderh.gcodeviewer.contourelement;
 )
 @TopComponent.Description(
         preferredID = "ContourTopComponent",
-        //iconBase="SET/PATH/TO/ICON/HERE", 
+        iconBase="org/roiderh/gcode/Drehwerkzeug_16x16.png", // icon in menu
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(mode = "output", openAtStartup = true)
@@ -51,11 +50,7 @@ import org.roiderh.gcodeviewer.contourelement;
         displayName = "#CTL_ContourAction",
         preferredID = "ContourTopComponent"
 )
-@Messages({
-    "CTL_ContourAction=G-Code Contour",
-    "CTL_ContourTopComponent=G-Code Contour",
-    "HINT_ContourTopComponent=Show the Contour parsed from G-Code"
-})
+
 public final class ContourTopComponent extends TopComponent {
 
     /**
@@ -70,8 +65,8 @@ public final class ContourTopComponent extends TopComponent {
 
     public ContourTopComponent() {
         initComponents();
-        setName(Bundle.CTL_ContourTopComponent());
-        setToolTipText(Bundle.HINT_ContourTopComponent());
+        setName(org.openide.util.NbBundle.getMessage(ContourTopComponent.class, "CTL_ContourTopComponent"));
+        setToolTipText(org.openide.util.NbBundle.getMessage(ContourTopComponent.class, "HINT_ContourTopComponent"));
 
     }
 
@@ -148,7 +143,7 @@ public final class ContourTopComponent extends TopComponent {
         if (this.disp == null) {
             return;
         }
-        if(this.c_elements == null){
+        if (this.c_elements == null) {
             return;
         }
         int canvas_width = this.getWidth();
@@ -202,8 +197,8 @@ public final class ContourTopComponent extends TopComponent {
             y_size = 1;
         }
 
-        double x_fact = (double) canvas_width * 0.9 /  x_size;
-        double y_fact = (double) canvas_height * 0.9 /  y_size;
+        double x_fact = (double) canvas_width * 0.9 / x_size;
+        double y_fact = (double) canvas_height * 0.9 / y_size;
         double fact = Math.min(x_fact, y_fact);
 
         // vergrössern:
@@ -235,9 +230,9 @@ public final class ContourTopComponent extends TopComponent {
                 g2d.setStroke(orig_stroke);
             }
 
-            ce.curve.asPolyline(10).transform(sca).transform(mirror).transform(tra).draw(g2d);
+            ce.curve.transform(sca).transform(mirror).transform(tra).draw(g2d);
             if (ce.transistion_elem != null) {
-                ce.transition_curve.asPolyline(5).transform(sca).transform(mirror).transform(tra).draw(g2d);
+                ce.transition_curve.transform(sca).transform(mirror).transform(tra).draw(g2d);
             }
 
         }
