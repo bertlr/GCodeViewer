@@ -28,6 +28,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
 import math.geom2d.Point2D;
+import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import org.roiderh.gcodeviewer.contourelement;
 
@@ -220,6 +221,7 @@ public final class ContourTopComponent extends TopComponent {
         Stroke orig_stroke = g2d.getStroke();
         float dash1[] = {2.0f}; //line length
         BasicStroke rapid = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+        Point2D lastPoint = new Point2D();
         for (contourelement ce : this.c_elements) {
             if (ce.curve == null) {
                 continue;
@@ -229,13 +231,18 @@ public final class ContourTopComponent extends TopComponent {
             } else {
                 g2d.setStroke(orig_stroke);
             }
-
+            lastPoint = ce.curve.lastPoint();
             ce.curve.transform(sca).transform(mirror).transform(tra).draw(g2d);
             if (ce.transistion_elem != null) {
+                lastPoint = ce.transition_curve.lastPoint();
                 ce.transition_curve.transform(sca).transform(mirror).transform(tra).draw(g2d);
             }
 
         }
+        // draw a circle at the end of the curve
+        double radius = 3;
+        Circle2D ende = new Circle2D(lastPoint, radius / fact);
+        ende.transform(sca).transform(mirror).transform(tra).draw(g2d);
 
     }
 
