@@ -40,7 +40,7 @@ import org.roiderh.gcodeviewer.contourelement;
 )
 @TopComponent.Description(
         preferredID = "ContourTopComponent",
-        iconBase="org/roiderh/gcode/Drehwerkzeug_16x16.png", // icon in menu
+        iconBase = "org/roiderh/gcode/Drehwerkzeug_16x16.png", // icon in menu
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(mode = "output", openAtStartup = true)
