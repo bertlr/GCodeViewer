@@ -12,6 +12,8 @@ It works for CNC Lathe with Sinumerik 840D. Only X and Z axis are plotted. The X
 
 # Usage
 
+Click in menu: "Window" -> "G-Code Contour" to show the output window for the contour plot.
+
 Just select some lines of code and click the toolbar button: ![toolbar button](src/org/roiderh/gcode/Drehwerkzeug_24x24.png "toolbar button")
 to show the toolpath. The first line must contain the x and z parameter. 
 
