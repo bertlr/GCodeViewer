@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 by by Herbert Roider <herbert.roider@utanet.at>
+ * Copyright (C) 2016 by by Herbert Roider <herbert.roider@utanet.at>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,19 +21,16 @@ import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle.Messages;
 
 import org.openide.windows.TopComponent;
 import java.util.Set;
 
-import org.openide.cookies.LineCookie;
 import javax.swing.text.JTextComponent;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import org.roiderh.gcodeviewer.gcodereader;
-import math.geom2d.Point2D;
 import org.openide.awt.ActionReferences;
 import org.roiderh.gcodeviewer.contourelement;
 
@@ -53,11 +50,11 @@ import org.roiderh.gcodeviewer.contourelement;
 
 public final class GcodeAction implements ActionListener {
 
-    private LineCookie context;
-    private JTextComponent editor;
+    //private LineCookie context;
+    //private JTextComponent editor;
     // private StyledDocument document;
     private String selectedText;
-    private String stringToBeInserted;
+    //private String stringToBeInserted;
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -86,14 +83,14 @@ public final class GcodeAction implements ActionListener {
 
         // parse the String
         //FileInputStream is;
-        LinkedList<Point2D> disp = null;
+        //LinkedList<Point2D> disp = null;
         LinkedList<contourelement> contour;
         try {
 
             //is = new FileInputStream(new File("/home/herbert/NetBeansProjects/gcodeviewer/src/org/roiderh/gcodeviewer/gcode.txt"));
             gcodereader gr = new gcodereader();
             contour = gr.read(is);
-            disp = gr.create_display_points(contour);
+            //disp = gr.create_display_points(contour);
 
         } catch (Exception e1) {
             System.out.println("Error " + e1.toString());
@@ -102,11 +99,11 @@ public final class GcodeAction implements ActionListener {
 
         }
 
-        System.out.println("ready calculated Contur:");
-        for (Point2D p : disp) {
-            System.out.println("x=" + p.x() + ", y=" + p.y());
-
-        }
+//        System.out.println("ready calculated Contur:");
+//        for (Point2D p : disp) {
+//            System.out.println("x=" + p.x() + ", y=" + p.y());
+//
+//        }
 
         // Update the Contour
         Set<TopComponent> windows = org.openide.windows.TopComponent.getRegistry().getOpened();
@@ -123,9 +120,7 @@ public final class GcodeAction implements ActionListener {
             return;
         }
 
-        panel.disp = disp;
         panel.c_elements = contour;
-        panel.repaint();
-
+        panel.drawGraph();
     }
 }
