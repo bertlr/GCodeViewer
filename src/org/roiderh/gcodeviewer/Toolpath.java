@@ -30,8 +30,6 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
 import math.geom2d.Point2D;
 import math.geom2d.circulinear.CirculinearElement2D;
 import math.geom2d.conic.CircleArc2D;
@@ -46,7 +44,7 @@ import math.geom2d.line.LineSegment2D;
 public class Toolpath extends AnchorPane {
 
     private double pressedX, pressedY;
-    
+
     private Text text = null;
     public double fact = 1.0;
     //public double prev_fact = 1.0;
@@ -97,7 +95,6 @@ public class Toolpath extends AnchorPane {
         double x_fact = (double) this.getWidth() * 0.98 / width;
         double y_fact = (double) this.getHeight() * 0.98 / height;
         fact = Math.min(x_fact, y_fact);
-        //prev_fact = fact;
 
     }
 
@@ -143,9 +140,6 @@ public class Toolpath extends AnchorPane {
         for (javafx.scene.shape.Shape s : shapes) {
             this.getChildren().clear();
         }
-
-        Scale scale = new Scale();
-        Translate trans = new Translate();
 
         for (contourelement current_ce : c_elements) {
 
@@ -313,14 +307,13 @@ public class Toolpath extends AnchorPane {
                 path.setStyle("-fx-stroke-dash-array: 1 3 ; ");
             }
 
-            //path.getTransforms().add(trans);
-            //path.getTransforms().add(scale);
             shapes.add(path);
             getChildren().add(path);
 
         }
 
         setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
             public void handle(MouseEvent event) {
                 pressedX = event.getX();
                 pressedY = event.getY();
@@ -334,22 +327,16 @@ public class Toolpath extends AnchorPane {
                 double y = event.getY();
                 x_trans += (x - pressedX);
                 y_trans += (y - pressedY);
-                //x_trans /= fact;
-                //y_trans /= fact;
                 draw();
                 pressedX = x;
                 pressedY = y;
-                //event.consume();
+                event.consume();
             }
         });
 
         setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent event) {
-
-                //zoomcenterX = event.getX();
-                //zoomcenterY = event.getY();
-                //prev_fact = fact;
                 double new_fact = fact;
 
                 if (event.getDeltaY() < 0) {
@@ -367,7 +354,7 @@ public class Toolpath extends AnchorPane {
 
                 draw();
 
-                //event.consume();
+                event.consume();
             }
         });
 
