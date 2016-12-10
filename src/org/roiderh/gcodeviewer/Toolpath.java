@@ -252,11 +252,11 @@ public class Toolpath extends AnchorPane {
             path.setOnMouseEntered(new EventHandler<MouseEvent>() {
 
                 @Override
-                public void handle(MouseEvent t) {
+                public void handle(MouseEvent event) {
                     NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
                     DecimalFormat df = (DecimalFormat) nf;
                     df.applyPattern("0.###");
-                    contourelement current_ce = ((ToolpathElement) t.getSource()).element;
+                    contourelement current_ce = ((ToolpathElement) event.getSource()).element;
 
                     if (current_ce.shape == contourelement.Shape.ARC) {
                         CircleArc2D geo = (CircleArc2D) current_ce.curve;
@@ -271,21 +271,22 @@ public class Toolpath extends AnchorPane {
                             endAngle = -90.0 + (geo.getStartAngle() + geo.getAngleExtent()) * 180.0 / Math.PI;
                         }
 
-                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x " + df.format(current_ce.points.getFirst().y * 2.0) + ", z " + df.format(current_ce.points.getFirst().x)
-                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x " + df.format(current_ce.points.getLast().y * 2.0) + ", z " + df.format(current_ce.points.getLast().x)
-                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Centerpoint") + ": x " + df.format(geo.supportingCircle().center().getY() * 2.0) + ", z " + df.format(geo.supportingCircle().center().getX())
+                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x=" + df.format(current_ce.points.getFirst().y * 2.0) + ", z=" + df.format(current_ce.points.getFirst().x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x=" + df.format(current_ce.points.getLast().y * 2.0) + ", z=" + df.format(current_ce.points.getLast().x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Centerpoint") + ": x=" + df.format(geo.supportingCircle().center().getY() * 2.0) + ", z=" + df.format(geo.supportingCircle().center().getX())
                                 + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Radius") + ": " + df.format(current_ce.radius)
                                 + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Startangle") + ": " + df.format(startAngle)
                                 + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endangle") + ": " + df.format(endAngle));
                     } else {
                         LineSegment2D geo = (LineSegment2D) current_ce.curve;
                         double angle = geo.direction().angle() * 180.0 / Math.PI;
-                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x " + df.format(current_ce.points.getFirst().y * 2.0) + ", z " + df.format(current_ce.points.getFirst().x)
-                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x " + df.format(current_ce.points.getLast().y * 2.0) + ", z " + df.format(current_ce.points.getLast().x)
+                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x=" + df.format(current_ce.points.getFirst().y * 2.0) + ", z=" + df.format(current_ce.points.getFirst().x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x=" + df.format(current_ce.points.getLast().y * 2.0) + ", z=" + df.format(current_ce.points.getLast().x)
                                 + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Angle") + ": " + df.format(angle));
                     }
 
-                    ((Shape) t.getSource()).setStroke(Color.RED);
+                    ((Shape) event.getSource()).setStroke(Color.RED);
+                    event.consume();
 
                 }
             });
@@ -293,10 +294,11 @@ public class Toolpath extends AnchorPane {
             path.setOnMouseExited(new EventHandler<MouseEvent>() {
 
                 @Override
-                public void handle(MouseEvent t) {
+                public void handle(MouseEvent event) {
 
                     text.setText("");
-                    ((Shape) t.getSource()).setStroke(Color.BLACK);
+                    ((Shape) event.getSource()).setStroke(Color.BLACK);
+                    event.consume();
 
                 }
             });
@@ -317,7 +319,7 @@ public class Toolpath extends AnchorPane {
             public void handle(MouseEvent event) {
                 pressedX = event.getX();
                 pressedY = event.getY();
-
+                event.consume();
             }
         });
         setOnMouseDragged(new EventHandler<MouseEvent>() {
