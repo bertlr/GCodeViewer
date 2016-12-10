@@ -32,6 +32,7 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
+import math.geom2d.Point2D;
 import math.geom2d.circulinear.CirculinearElement2D;
 import math.geom2d.conic.CircleArc2D;
 import math.geom2d.domain.PolyOrientedCurve2D;
@@ -45,9 +46,10 @@ import math.geom2d.line.LineSegment2D;
 public class Toolpath extends AnchorPane {
 
     private double pressedX, pressedY;
-
+    
     private Text text = null;
     public double fact = 1.0;
+    //public double prev_fact = 1.0;
     public double x_trans = 0.0;
     public double y_trans = 0.0;
     private double middle_x = 0.0;
@@ -89,12 +91,22 @@ public class Toolpath extends AnchorPane {
         double width = bb.getWidth();
         double height = bb.getHeight();
 
-        x_trans = (double) this.getWidth() / 2.0 - middle_x;
-        y_trans = (double) this.getHeight() / 2.0 - middle_y;
+        x_trans = (double) this.getWidth() / 2.0;
+        y_trans = (double) this.getHeight() / 2.0;
 
         double x_fact = (double) this.getWidth() * 0.98 / width;
         double y_fact = (double) this.getHeight() * 0.98 / height;
         fact = Math.min(x_fact, y_fact);
+        //prev_fact = fact;
+
+    }
+
+    public Point2D translateScalePoint(Point2D p) {
+        Point2D p2 = new Point2D(p.getX(), p.getY());
+        p2 = p2.translate(-this.middle_x, -this.middle_y);
+        p2 = p2.scale(fact, -fact);
+        p2 = p2.translate(this.x_trans, this.y_trans);
+        return p2;
 
     }
 
@@ -152,42 +164,59 @@ public class Toolpath extends AnchorPane {
             Shape l = null;
             if (current_ce.curve instanceof math.geom2d.conic.CircleArc2D) {
                 CircleArc2D geo = (CircleArc2D) current_ce.curve;
+
                 geo.supportingCircle().center().getX();
 
                 MoveTo mt = new MoveTo();
-                mt.setX(geo.asPolyline(1).firstPoint().getX());
-                mt.setY(geo.asPolyline(1).firstPoint().getY());
+                Point2D p1 = geo.asPolyline(1).firstPoint();
+                Point2D p2 = geo.asPolyline(1).lastPoint();
+                double radius = geo.supportingCircle().radius();
+
+                p1 = this.translateScalePoint(p1);
+                p2 = this.translateScalePoint(p2);
+
+                radius *= fact;
+
+                mt.setX(p1.getX());
+                mt.setY(p1.getY());
 
                 ArcTo at = new ArcTo();
                 at.setLargeArcFlag(false);
                 if (current_ce.ccw) {
-                    at.setSweepFlag(true);
-                } else {
                     at.setSweepFlag(false);
+                } else {
+                    at.setSweepFlag(true);
                 }
 
-                at.setRadiusX(geo.supportingCircle().radius());
-                at.setRadiusY(geo.supportingCircle().radius());
-                at.setX(geo.asPolyline(1).lastPoint().getX());
-                at.setY(geo.asPolyline(1).lastPoint().getY());
+                at.setRadiusX(radius);
+                at.setRadiusY(radius);
+                at.setX(p2.getX());
+                at.setY(p2.getY());
                 path.getElements().add(mt);
                 path.getElements().add(at);
 
             } else {
                 LineSegment2D geo = (LineSegment2D) current_ce.curve;
                 MoveTo mt = new MoveTo();
-                mt.setX(geo.firstPoint().getX());
-                mt.setY(geo.firstPoint().getY());
+
+                Point2D p1 = geo.firstPoint();
+                Point2D p2 = geo.lastPoint();
+                p1 = this.translateScalePoint(p1);
+                p2 = this.translateScalePoint(p2);
+
+                mt.setX(p1.getX());
+                mt.setY(p1.getY());
 
                 LineTo lt = new LineTo();
-                lt.setX(geo.lastPoint().getX());
-                lt.setY(geo.lastPoint().getY());
+                lt.setX(p2.getX());
+                lt.setY(p2.getY());
                 path.getElements().add(mt);
                 path.getElements().add(lt);
 
             }
             if (current_ce.transition_curve != null) {
                 if (current_ce.transition_curve instanceof math.geom2d.conic.CircleArc2D) {
+
                     ArcTo at = new ArcTo();
                     at.setLargeArcFlag(false);
                     CircleArc2D geo = (CircleArc2D) current_ce.transition_curve;
@@ -197,21 +226,30 @@ public class Toolpath extends AnchorPane {
                         at.setLargeArcFlag(false);
                     }
                     if (geo.isDirect()) {
-                        at.setSweepFlag(true);
-                    } else {
                         at.setSweepFlag(false);
+                    } else {
+                        at.setSweepFlag(true);
                     }
 
-                    at.setRadiusX(geo.supportingCircle().radius());
-                    at.setRadiusY(geo.supportingCircle().radius());
-                    at.setX(geo.asPolyline(1).lastPoint().getX());
-                    at.setY(geo.asPolyline(1).lastPoint().getY());
+                    Point2D p2 = geo.asPolyline(1).lastPoint();
+
+                    p2 = this.translateScalePoint(p2);
+
+                    at.setRadiusX(geo.supportingCircle().radius() * fact);
+                    at.setRadiusY(geo.supportingCircle().radius() * fact);
+                    at.setX(p2.getX());
+                    at.setY(p2.getY());
                     path.getElements().add(at);
 
                 } else {
+
+                    Point2D p2 = current_ce.transition_curve.lastPoint();
+
+                    p2 = this.translateScalePoint(p2);
+
                     LineTo lt = new LineTo();
-                    lt.setX(current_ce.transition_curve.lastPoint().getX());
-                    lt.setY(current_ce.transition_curve.lastPoint().getY());
+                    lt.setX(p2.getX());
+                    lt.setY(p2.getY());
                     path.getElements().add(lt);
 
                 }
@@ -239,18 +277,18 @@ public class Toolpath extends AnchorPane {
                             endAngle = -90.0 + (geo.getStartAngle() + geo.getAngleExtent()) * 180.0 / Math.PI;
                         }
 
-                        text.setText("Start:  " + "x " + df.format(current_ce.points.getFirst().y * 2.0) + ", z " + df.format(current_ce.points.getFirst().x)
-                                + "\nEnd:    " + "x " + df.format(current_ce.points.getLast().y * 2.0) + ", z " + df.format(current_ce.points.getLast().x)
-                                + "\nCenter: " + "x " + df.format(geo.supportingCircle().center().getY() * 2.0) + ", z " + df.format(geo.supportingCircle().center().getX())
-                                + "\nRadius: " + df.format(current_ce.radius)
-                                + "\nStart Angle: " + df.format(startAngle)
-                                + "\nEnd Angle:   " + df.format(endAngle));
+                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x " + df.format(current_ce.points.getFirst().y * 2.0) + ", z " + df.format(current_ce.points.getFirst().x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x " + df.format(current_ce.points.getLast().y * 2.0) + ", z " + df.format(current_ce.points.getLast().x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Centerpoint") + ": x " + df.format(geo.supportingCircle().center().getY() * 2.0) + ", z " + df.format(geo.supportingCircle().center().getX())
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Radius") + ": " + df.format(current_ce.radius)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Startangle") + ": " + df.format(startAngle)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endangle") + ": " + df.format(endAngle));
                     } else {
                         LineSegment2D geo = (LineSegment2D) current_ce.curve;
                         double angle = geo.direction().angle() * 180.0 / Math.PI;
-                        text.setText("Start: " + "x " + df.format(current_ce.points.getFirst().y * 2.0) + ", z " + df.format(current_ce.points.getFirst().x)
-                                + "\nEnd:   " + "x " + df.format(current_ce.points.getLast().y * 2.0) + ", z " + df.format(current_ce.points.getLast().x)
-                                + "\nAngle: " + df.format(angle));
+                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x " + df.format(current_ce.points.getFirst().y * 2.0) + ", z " + df.format(current_ce.points.getFirst().x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x " + df.format(current_ce.points.getLast().y * 2.0) + ", z " + df.format(current_ce.points.getLast().x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Angle") + ": " + df.format(angle));
                     }
 
                     ((Shape) t.getSource()).setStroke(Color.RED);
@@ -272,12 +310,11 @@ public class Toolpath extends AnchorPane {
             path.setStrokeWidth(1);
             path.setStroke(Color.BLACK);
             if (current_ce.feed == contourelement.Feed.RAPID) {
-                path.setStyle("-fx-stroke-dash-array: 0.01 0.1 ; ");
+                path.setStyle("-fx-stroke-dash-array: 1 3 ; ");
             }
 
-            path.getTransforms().add(trans);
-            path.getTransforms().add(scale);
-
+            //path.getTransforms().add(trans);
+            //path.getTransforms().add(scale);
             shapes.add(path);
             getChildren().add(path);
 
@@ -297,6 +334,8 @@ public class Toolpath extends AnchorPane {
                 double y = event.getY();
                 x_trans += (x - pressedX);
                 y_trans += (y - pressedY);
+                //x_trans /= fact;
+                //y_trans /= fact;
                 draw();
                 pressedX = x;
                 pressedY = y;
@@ -307,12 +346,16 @@ public class Toolpath extends AnchorPane {
         setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent event) {
+
+                //zoomcenterX = event.getX();
+                //zoomcenterY = event.getY();
+                //prev_fact = fact;
                 double new_fact = fact;
 
                 if (event.getDeltaY() < 0) {
-                    new_fact *= 0.8;
+                    new_fact *= 0.85;
                 } else {
-                    new_fact *= 1.2;
+                    new_fact *= 1.15;
                 }
                 if (new_fact < 0.5) {
                     return;
@@ -327,18 +370,6 @@ public class Toolpath extends AnchorPane {
                 //event.consume();
             }
         });
-
-        trans.setX(x_trans);
-        trans.setY(y_trans);
-
-        scale.setPivotX(middle_x);
-        scale.setPivotY(middle_y);
-        scale.setX(fact);
-        scale.setY(-fact);
-
-        for (javafx.scene.shape.Shape s : shapes) {
-            s.setStrokeWidth(1.0 / (fact * 0.9));
-        }
 
         text = new Text();
         double off = text.getBaselineOffset();
