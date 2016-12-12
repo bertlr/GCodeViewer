@@ -73,12 +73,23 @@ public class Toolpath extends AnchorPane {
      * @param elements
      */
     public void calcTransScale(LinkedList<contourelement> elements) {
+        LinkedList<CirculinearElement2D> c_el = this.cleanup_contour(elements);     
+        math.geom2d.Box2D bb = this.getBoundingBox(c_el);
 
-        LinkedList<CirculinearElement2D> c_el = this.cleanup_contour(elements);
-        PolyOrientedCurve2D closed = new PolyOrientedCurve2D(c_el);
-        closed.add(new Line2D(closed.lastPoint(), closed.firstPoint()));
-        math.geom2d.Box2D bb = closed.boundingBox();
+        for (int i = 0; i < c_el.size(); i++) {
+            CirculinearElement2D el = c_el.get(i);
+            math.geom2d.Box2D bb1 = el.boundingBox();
+            if (i == 0) {
+                bb = bb1;
 
+            } else {
+                bb = bb.union(bb1);
+            }
+
+        }
+        if(bb==null){
+            return;
+        }
         double max_x = bb.getMaxX();
         double min_x = bb.getMinX();
         double max_y = bb.getMaxY();
@@ -92,9 +103,29 @@ public class Toolpath extends AnchorPane {
         x_trans = (double) this.getWidth() / 2.0;
         y_trans = (double) this.getHeight() / 2.0;
 
-        double x_fact = (double) this.getWidth() * 0.98 / width;
-        double y_fact = (double) this.getHeight() * 0.98 / height;
+        double x_fact = (double) this.getWidth() * 0.95 / width;
+        double y_fact = (double) this.getHeight() * 0.95 / height;
         fact = Math.min(x_fact, y_fact);
+
+    }
+
+    public math.geom2d.Box2D getBoundingBox(LinkedList<CirculinearElement2D> c_el) {
+        
+        c_el.add(new Line2D(c_el.getLast().lastPoint(), c_el.getFirst().firstPoint()));
+        math.geom2d.Box2D bb = null;
+
+        for (int i = 0; i < c_el.size(); i++) {
+            CirculinearElement2D el = c_el.get(i);
+            math.geom2d.Box2D bb1 = el.boundingBox();
+            if (i == 0) {
+                bb = bb1;
+
+            } else {
+                bb = bb.union(bb1);
+            }
+
+        }
+        return bb;
 
     }
 
@@ -346,7 +377,7 @@ public class Toolpath extends AnchorPane {
                 } else {
                     new_fact *= 1.15;
                 }
-                if (new_fact < 0.5) {
+                if (new_fact < 0.001) {
                     return;
                 }
                 if (new_fact > 1000.0) {
