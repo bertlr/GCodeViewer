@@ -33,7 +33,6 @@ import javafx.scene.text.Text;
 import math.geom2d.Point2D;
 import math.geom2d.circulinear.CirculinearElement2D;
 import math.geom2d.conic.CircleArc2D;
-import math.geom2d.domain.PolyOrientedCurve2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.line.LineSegment2D;
 
@@ -117,6 +116,9 @@ public class Toolpath extends AnchorPane {
         for (int i = 0; i < c_el.size(); i++) {
             CirculinearElement2D el = c_el.get(i);
             math.geom2d.Box2D bb1 = el.boundingBox();
+            if(bb1 == null){
+                return null;
+            }
             if (i == 0) {
                 bb = bb1;
 
