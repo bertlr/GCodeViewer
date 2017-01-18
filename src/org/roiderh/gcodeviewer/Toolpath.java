@@ -331,8 +331,8 @@ public class Toolpath extends AnchorPane {
                     } else {
                         LineSegment2D geo = (LineSegment2D) current_ce.curve;
                         double angle = geo.direction().angle() * 180.0 / Math.PI;
-                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x=" + df.format(startpoint.y * 2.0) + ", z=" + df.format(startpoint.x)
-                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x=" + df.format(endpoint.y * 2.0) + ", z=" + df.format(endpoint.x)
+                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": X=" + df.format(startpoint.y * 2.0) + ", Z=" + df.format(startpoint.x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": X=" + df.format(endpoint.y * 2.0) + ", Z=" + df.format(endpoint.x)
                                 + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Angle") + ": " + df.format(angle)
                                 + "\n" + "ΔX : " + df.format((endpoint.y - startpoint.y) * 2.0)
                                 + "\n" + "ΔZ : " + df.format(endpoint.x - startpoint.x)
