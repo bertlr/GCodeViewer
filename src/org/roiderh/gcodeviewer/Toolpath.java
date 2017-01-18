@@ -72,7 +72,7 @@ public class Toolpath extends AnchorPane {
      * @param elements
      */
     public void calcTransScale(LinkedList<contourelement> elements) {
-        LinkedList<CirculinearElement2D> c_el = this.cleanup_contour(elements);     
+        LinkedList<CirculinearElement2D> c_el = this.cleanup_contour(elements);
         math.geom2d.Box2D bb = this.getBoundingBox(c_el);
 
         for (int i = 0; i < c_el.size(); i++) {
@@ -86,7 +86,7 @@ public class Toolpath extends AnchorPane {
             }
 
         }
-        if(bb==null){
+        if (bb == null) {
             return;
         }
         double max_x = bb.getMaxX();
@@ -109,14 +109,14 @@ public class Toolpath extends AnchorPane {
     }
 
     public math.geom2d.Box2D getBoundingBox(LinkedList<CirculinearElement2D> c_el) {
-        
+
         c_el.add(new Line2D(c_el.getLast().lastPoint(), c_el.getFirst().firstPoint()));
         math.geom2d.Box2D bb = null;
 
         for (int i = 0; i < c_el.size(); i++) {
             CirculinearElement2D el = c_el.get(i);
             math.geom2d.Box2D bb1 = el.boundingBox();
-            if(bb1 == null){
+            if (bb1 == null) {
                 return null;
             }
             if (i == 0) {
@@ -291,6 +291,9 @@ public class Toolpath extends AnchorPane {
                     df.applyPattern("0.###");
                     contourelement current_ce = ((ToolpathElement) event.getSource()).element;
 
+                    point startpoint = current_ce.points.getFirst();
+                    point endpoint = current_ce.points.getLast();
+
                     if (current_ce.shape == contourelement.Shape.ARC) {
                         CircleArc2D geo = (CircleArc2D) current_ce.curve;
                         double startAngle;
@@ -303,19 +306,37 @@ public class Toolpath extends AnchorPane {
                             startAngle = -90.0 + geo.getStartAngle() * 180.0 / Math.PI;
                             endAngle = -90.0 + (geo.getStartAngle() + geo.getAngleExtent()) * 180.0 / Math.PI;
                         }
+                        if (startAngle > 360.0) {
+                            startAngle -= 360.0;
+                        }
+                        if (startAngle < 360.0) {
+                            startAngle += 360.0;
+                        }
+                        if (endAngle > 360.0) {
+                            endAngle -= 360.0;
+                        }
+                        if (endAngle < 360.0) {
+                            endAngle += 360.0;
+                        }
 
-                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x=" + df.format(current_ce.points.getFirst().y * 2.0) + ", z=" + df.format(current_ce.points.getFirst().x)
-                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x=" + df.format(current_ce.points.getLast().y * 2.0) + ", z=" + df.format(current_ce.points.getLast().x)
-                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Centerpoint") + ": x=" + df.format(geo.supportingCircle().center().getY() * 2.0) + ", z=" + df.format(geo.supportingCircle().center().getX())
+                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": X=" + df.format(startpoint.y * 2.0) + ", Z=" + df.format(startpoint.x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": X=" + df.format(endpoint.y * 2.0) + ", Z=" + df.format(endpoint.x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Centerpoint") + ": X=" + df.format(geo.supportingCircle().center().getY() * 2.0) + ", Z=" + df.format(geo.supportingCircle().center().getX())
                                 + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Radius") + ": " + df.format(current_ce.radius)
                                 + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Startangle") + ": " + df.format(startAngle)
-                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endangle") + ": " + df.format(endAngle));
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endangle") + ": " + df.format(endAngle)
+                                + "\n" + "ΔX : " + df.format((endpoint.y - startpoint.y) * 2.0)
+                                + "\n" + "ΔZ : " + df.format(endpoint.x - startpoint.x)
+                        );
                     } else {
                         LineSegment2D geo = (LineSegment2D) current_ce.curve;
                         double angle = geo.direction().angle() * 180.0 / Math.PI;
-                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x=" + df.format(current_ce.points.getFirst().y * 2.0) + ", z=" + df.format(current_ce.points.getFirst().x)
-                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x=" + df.format(current_ce.points.getLast().y * 2.0) + ", z=" + df.format(current_ce.points.getLast().x)
-                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Angle") + ": " + df.format(angle));
+                        text.setText(org.openide.util.NbBundle.getMessage(Toolpath.class, "Startpoint") + ": x=" + df.format(startpoint.y * 2.0) + ", z=" + df.format(startpoint.x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endpoint") + ": x=" + df.format(endpoint.y * 2.0) + ", z=" + df.format(endpoint.x)
+                                + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Angle") + ": " + df.format(angle)
+                                + "\n" + "ΔX : " + df.format((endpoint.y - startpoint.y) * 2.0)
+                                + "\n" + "ΔZ : " + df.format(endpoint.x - startpoint.x)
+                        );
                     }
 
                     ((Shape) event.getSource()).setStroke(Color.RED);
@@ -336,7 +357,7 @@ public class Toolpath extends AnchorPane {
                 }
             });
             path.element = current_ce;
-            path.setStrokeWidth(1);
+            path.setStrokeWidth(2);
             path.setStroke(Color.BLACK);
             if (current_ce.feed == contourelement.Feed.RAPID) {
                 path.setStyle("-fx-stroke-dash-array: 1 3 ; ");
