@@ -309,13 +309,13 @@ public class Toolpath extends AnchorPane {
                         if (startAngle > 360.0) {
                             startAngle -= 360.0;
                         }
-                        if (startAngle < 360.0) {
+                        if (startAngle < -360.0) {
                             startAngle += 360.0;
                         }
                         if (endAngle > 360.0) {
                             endAngle -= 360.0;
                         }
-                        if (endAngle < 360.0) {
+                        if (endAngle < -360.0) {
                             endAngle += 360.0;
                         }
 
