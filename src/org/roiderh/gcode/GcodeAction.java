@@ -90,6 +90,11 @@ public final class GcodeAction implements ActionListener {
             //is = new FileInputStream(new File("/home/herbert/NetBeansProjects/gcodeviewer/src/org/roiderh/gcodeviewer/gcode.txt"));
             gcodereader gr = new gcodereader();
             contour = gr.read(is);
+            if (contour.isEmpty()) {
+                return;
+            }
+            gr.calc_contour(contour);
+
             //disp = gr.create_display_points(contour);
 
         } catch (Exception e1) {

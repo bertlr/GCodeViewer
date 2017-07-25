@@ -71,7 +71,7 @@ public class Toolpath extends AnchorPane {
      *
      * @param elements
      */
-    public void calcTransScale(LinkedList<contourelement> elements) {
+    public void calcTransScale(LinkedList<org.roiderh.gcodeviewer.contourelement> elements) {
         LinkedList<CirculinearElement2D> c_el = this.cleanup_contour(elements);
         math.geom2d.Box2D bb = this.getBoundingBox(c_el);
 
@@ -109,7 +109,7 @@ public class Toolpath extends AnchorPane {
     }
 
     public math.geom2d.Box2D getBoundingBox(LinkedList<CirculinearElement2D> c_el) {
-
+        
         c_el.add(new Line2D(c_el.getLast().lastPoint(), c_el.getFirst().firstPoint()));
         math.geom2d.Box2D bb = null;
 
@@ -154,7 +154,7 @@ public class Toolpath extends AnchorPane {
                 continue;
             }
             if (current_ce.curve.length() == 0) {
-                continue;
+                //continue;
             }
             elements.add(current_ce.curve);
 
