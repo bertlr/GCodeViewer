@@ -109,7 +109,7 @@ public class Toolpath extends AnchorPane {
     }
 
     public math.geom2d.Box2D getBoundingBox(LinkedList<CirculinearElement2D> c_el) {
-        
+
         c_el.add(new Line2D(c_el.getLast().lastPoint(), c_el.getFirst().firstPoint()));
         math.geom2d.Box2D bb = null;
 
@@ -290,6 +290,12 @@ public class Toolpath extends AnchorPane {
                     DecimalFormat df = (DecimalFormat) nf;
                     df.applyPattern("0.###");
                     contourelement current_ce = ((ToolpathElement) event.getSource()).element;
+                    String transel = "";
+                    if (current_ce.transistion_elem == current_ce.transistion_elem.CHAMFER) {
+                        transel = "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "CornerChamfer") + ": " + df.format(current_ce.transition_elem_size);
+                    } else if (current_ce.transistion_elem == current_ce.transistion_elem.ROUND) {
+                        transel = "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "CornerRound") + ": " + df.format(current_ce.transition_elem_size);
+                    }
 
                     point startpoint = current_ce.points.getFirst();
                     point endpoint = current_ce.points.getLast();
@@ -327,6 +333,7 @@ public class Toolpath extends AnchorPane {
                                 + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Endangle") + ": " + df.format(endAngle)
                                 + "\n" + "ΔX : " + df.format((endpoint.y - startpoint.y) * 2.0)
                                 + "\n" + "ΔZ : " + df.format(endpoint.x - startpoint.x)
+                                + transel
                         );
                     } else {
                         LineSegment2D geo = (LineSegment2D) current_ce.curve;
@@ -336,6 +343,7 @@ public class Toolpath extends AnchorPane {
                                 + "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Angle") + ": " + df.format(angle)
                                 + "\n" + "ΔX : " + df.format((endpoint.y - startpoint.y) * 2.0)
                                 + "\n" + "ΔZ : " + df.format(endpoint.x - startpoint.x)
+                                + transel
                         );
                     }
 

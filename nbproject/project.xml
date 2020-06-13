@@ -7,30 +7,11 @@
             <standalone/>
             <module-dependencies>
                 <dependency>
-                    <code-name-base>org.jdesktop.beansbinding</code-name-base>
+                    <code-name-base>org.netbeans.api.templates</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>1.21.1.121</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.netbeans.modules.editor</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>3</release-version>
-                        <specification-version>1.75.2.5.22.43</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.netbeans.modules.editor.lib</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>3</release-version>
-                        <specification-version>3.46.1.22.43</specification-version>
+                        <specification-version>1.12.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -39,7 +20,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.81.2.43</specification-version>
+                        <specification-version>2.22.1.55.3</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -48,7 +29,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.42.1</specification-version>
+                        <specification-version>1.53.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -65,6 +46,22 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>8.8.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.filesystems.compat8</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.13.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.filesystems.nb</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.14.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -116,6 +113,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.openide.util.ui</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.12.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.windows</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -144,16 +149,48 @@
                 <binary-origin>release/modules/ext/jep-2.4.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/javafx-swt.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx-swt.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javafx.graphics.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx.graphics.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javafx.base.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx.base.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javafx.swing.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx.swing.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/ext-1.1.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/ext-1.1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javafx.controls.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx.controls.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javafx.media.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx.media.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/junit.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/junit.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/javafx.fxml.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx.fxml.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/javaGeom-0.11.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/javaGeom-0.11.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javafx.web.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx.web.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
