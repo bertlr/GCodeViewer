@@ -26,10 +26,14 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcTo;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
+import javax.swing.text.JTextComponent;
 import math.geom2d.Point2D;
 import math.geom2d.circulinear.CirculinearElement2D;
 import math.geom2d.conic.CircleArc2D;
@@ -51,6 +55,7 @@ public class Toolpath extends AnchorPane {
     public double y_trans = 0.0;
     private double middle_x = 0.0;
     private double middle_y = 0.0;
+    private Circle endpoint_circle;
     /**
      * The contour elements to display
      */
@@ -300,6 +305,8 @@ public class Toolpath extends AnchorPane {
                     point startpoint = current_ce.points.getFirst();
                     point endpoint = current_ce.points.getLast();
 
+                    String linenumber = "\n" + org.openide.util.NbBundle.getMessage(Toolpath.class, "Linenumber") + ": " + String.valueOf(current_ce.abs_line_index + 1);
+
                     if (current_ce.shape == contourelement.Shape.ARC) {
                         CircleArc2D geo = (CircleArc2D) current_ce.curve;
                         double startAngle;
@@ -334,6 +341,7 @@ public class Toolpath extends AnchorPane {
                                 + "\n" + "ΔX : " + df.format((endpoint.y - startpoint.y) * 2.0)
                                 + "\n" + "ΔZ : " + df.format(endpoint.x - startpoint.x)
                                 + transel
+                                + linenumber
                         );
                     } else {
                         LineSegment2D geo = (LineSegment2D) current_ce.curve;
@@ -344,10 +352,17 @@ public class Toolpath extends AnchorPane {
                                 + "\n" + "ΔX : " + df.format((endpoint.y - startpoint.y) * 2.0)
                                 + "\n" + "ΔZ : " + df.format(endpoint.x - startpoint.x)
                                 + transel
+                                + linenumber
                         );
                     }
 
                     ((Shape) event.getSource()).setStroke(Color.RED);
+                    Point2D vertex = new Point2D(current_ce.points.getLast().x, current_ce.points.getLast().y);
+                    vertex = translateScalePoint(vertex);
+                    endpoint_circle = new Circle(vertex.getX(), vertex.getY(), 4);
+                    endpoint_circle.setStroke(Color.RED);
+                    getChildren().add(endpoint_circle);
+
                     event.consume();
 
                 }
@@ -359,13 +374,36 @@ public class Toolpath extends AnchorPane {
                 public void handle(MouseEvent event) {
 
                     text.setText("");
+                    getChildren().remove(endpoint_circle);
                     ((Shape) event.getSource()).setStroke(Color.BLACK);
                     event.consume();
 
                 }
             });
+
+            path.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    contourelement current_ce = ((ToolpathElement) event.getSource()).element;
+                    JTextComponent ed = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();
+
+                    //AttributeSet defaultColors = org.netbeans.api.editor.settings.AttributesUtilities.createImmutable(StyleConstants.Background, new java.awt.Color(236, 235, 163));
+                    int start_offset = ed.getSelectionStart();
+                    int end_offset = ed.getSelectionEnd();
+                    Document doc = ed.getDocument();
+                    Element root = doc.getDefaultRootElement();
+                    Element el = root.getElement(current_ce.abs_line_index);
+                    int offset = el.getStartOffset();
+                    ed.setCaretPosition(offset);
+
+                    event.consume();
+
+                }
+
+            });
+
             path.element = current_ce;
-            path.setStrokeWidth(2);
+            path.setStrokeWidth(3);
             path.setStroke(Color.BLACK);
             if (current_ce.feed == contourelement.Feed.RAPID) {
                 path.setStyle("-fx-stroke-dash-array: 1 3 ; ");

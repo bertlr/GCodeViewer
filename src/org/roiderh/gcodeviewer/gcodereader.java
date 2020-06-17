@@ -24,6 +24,7 @@ import org.roiderh.gcodeviewer.lexer.Token;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class gcodereader {
      */
     public Collection<String> messages = null;
 
-    public LinkedList<contourelement> read(InputStream is) throws Exception {
+    public LinkedList<contourelement> read(int abs_start_index, ArrayList<String> lines) throws Exception {
         //FileInputStream is;
         //FileOutputStream os;
         this.messages = new HashSet<>();
@@ -102,13 +103,14 @@ public class gcodereader {
         //try {
         //os = new FileOutputStream(new File("/home/herbert/NetBeansProjects/gcodeviewer/src/gcodeviewer/punkte.txt"));
         Token t;
-        BufferedReader br;
+        //BufferedReader br;
         String line;
         InputStream istream;
-        br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+        //br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
         //InputStream line = new ByteArrayInputStream(this.selectedText.getBytes());
-        while ((line = br.readLine()) != null) {
+        for (int i = 0; i < lines.size(); i++) {
             linenumber++;
+            line = lines.get(i);
             // remove comments, from semicolon to the line break.
             int semicolon_pos = line.indexOf(";");
             if (semicolon_pos >= 0) {
@@ -351,7 +353,9 @@ public class gcodereader {
 
             c_elem = new contourelement();
             c_elem.linenumber = linenumber;
-
+            c_elem.line = line.trim();
+            c_elem.abs_line_index = abs_start_index + i;
+            
             // Transition Element:
             if (machine == 0) {
 
@@ -578,17 +582,18 @@ public class gcodereader {
      * @return 840D = 0, 810T = 1
      */
     public int getMachine() {
-        if(this.machine == -1){
+        if (this.machine == -1) {
             return 0;
         }
         return this.machine;
     }
+
     /**
-     * 
-     * @param _m   840D = 0, 810T = 1
+     *
+     * @param _m 840D = 0, 810T = 1
      */
-    private void setMachine(int _m){
-        if(this.machine == -1){
+    private void setMachine(int _m) {
+        if (this.machine == -1) {
             this.machine = _m;
         }
     }

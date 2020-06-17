@@ -8,6 +8,7 @@ package org.roiderh.gcodeviewer;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import math.geom2d.Point2D;
 import org.junit.After;
@@ -49,11 +50,15 @@ public class gcodereaderTest {
     public void testRead() throws Exception {
         System.out.println("read");
         String gcode = "G0 X0 Z2\nG3 X0 Z0 CR=1\nG1 X4 RND=1\nG1 Z-2\n";
-
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add("G0 X0 Z2");
+        lines.add("G3 X0 Z0 CR=1");
+        lines.add("G1 X4 RND=1");
+        lines.add("G1 Z-2");
         InputStream is = new ByteArrayInputStream(gcode.getBytes(StandardCharsets.UTF_8));
         gcodereader instance = new gcodereader();
         LinkedList<contourelement> expResult = null;
-        LinkedList<contourelement> result = instance.read(is);
+        LinkedList<contourelement> result = instance.read(0, lines);
                 //contourelement current_ce = null;
 
         // calculate the transitions elements and the result vertexes and tangent points.

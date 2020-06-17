@@ -24,44 +24,49 @@ import math.geom2d.circulinear.CirculinearElement2D;
  *
  * @author Herbert Roider <herbert.roider@utanet.at>
  */
-   
 public class contourelement {
-        // shape of the transition element:
-        public enum Transition {
-                CHAMFER, ROUND
-        }
-        // G0/G1 for lines and G2/G3 for arc
-        public enum Shape {
-                LINE, ARC
-        }
-        public enum Feed {
-                RAPID, CUTTING
-        }
-       // holds the start and end point without transition element:
-        public LinkedList<point> points = new LinkedList<>();
-        // calculated start point with transition element:
-        public Point2D start;
-        // calculated end point with transition element:
-        public Point2D end;
-        // Transition Element chamfer or round between the current and the next element
-        public Transition transistion_elem;
-        // line or arc
-        public Shape shape;
-        public double transition_elem_size;
-        // only rapid (G0) or cutting (G1)
-        public Feed feed;
-        // the real linenumber, not N-number or Lable
-        public int linenumber;
-        /**
-         * If the shape was a arc (circle), the radius (CR or B)
-         */
-        public double radius; 
-        // for arc, ccw (counter clockwise) is true for G3, ccw=false for G2
-        public boolean ccw = true;
-        
-        // The element as curve (line or arc) with transition element
-        public  CirculinearElement2D curve;
-        // The transition element as curve (line or arc)
-        public  CirculinearElement2D transition_curve;
+    // shape of the transition element:
+
+    public enum Transition {
+        CHAMFER, ROUND
+    }
+    // G0/G1 for lines and G2/G3 for arc
+
+    public enum Shape {
+        LINE, ARC
+    }
+
+    public enum Feed {
+        RAPID, CUTTING
+    }
+    // holds the start and end point without transition element:
+    public LinkedList<point> points = new LinkedList<>();
+    // calculated start point with transition element:
+    public Point2D start;
+    // calculated end point with transition element:
+    public Point2D end;
+    // Transition Element chamfer or round between the current and the next element
+    public Transition transistion_elem;
+    // line or arc
+    public Shape shape;
+    public double transition_elem_size;
+    // only rapid (G0) or cutting (G1)
+    public Feed feed;
+    // the real linenumber, not N-number or Lable
+    public int linenumber;
+    /**
+     * If the shape was a arc (circle), the radius (CR or B)
+     */
+    public double radius;
+    // for arc, ccw (counter clockwise) is true for G3, ccw=false for G2
+    public boolean ccw = true;
+
+    // The element as curve (line or arc) with transition element
+    public CirculinearElement2D curve;
+    // The transition element as curve (line or arc)
+    public CirculinearElement2D transition_curve;
+
+    public String line;
+    public int abs_line_index = -1;
 
 }

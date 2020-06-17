@@ -28,8 +28,11 @@ import java.util.Set;
 import javax.swing.text.JTextComponent;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
 import org.roiderh.gcodeviewer.gcodereader;
 import org.openide.awt.ActionReferences;
 import org.roiderh.gcodeviewer.contourelement;
@@ -87,16 +90,35 @@ public final class GcodeAction implements ActionListener {
         LinkedList<contourelement> contour;
         try {
 
-            //is = new FileInputStream(new File("/home/herbert/NetBeansProjects/gcodeviewer/src/org/roiderh/gcodeviewer/gcode.txt"));
             gcodereader gr = new gcodereader();
-            contour = gr.read(is);
-            if (contour.isEmpty()) {
-                return;
+//            contour = gr.read(is);
+//            if (contour.isEmpty()) {
+//                return;
+//            }
+//            gr.calc_contour(contour);
+
+            int start_offset = ed.getSelectionStart();
+            int end_offset = ed.getSelectionEnd();
+            Document doc = ed.getDocument();
+            Element root = doc.getDefaultRootElement();
+            int start_index = root.getElementIndex(start_offset);
+            int end_index = root.getElementIndex(end_offset);
+            int lineIndex = 0;
+            //int elCount = root.getElementCount();
+            //int count = 0;
+            ArrayList<String> lines = new ArrayList<>();
+
+            for (lineIndex = start_index; lineIndex <= end_index; lineIndex++) {
+                Element contentEl = root.getElement(lineIndex);
+                int start = contentEl.getStartOffset();
+                int end = contentEl.getEndOffset();
+                String line = doc.getText(start, end - start - 1);
+                lines.add(line);
+
             }
+            contour = gr.read(start_index, lines);
             gr.calc_contour(contour);
-
             //disp = gr.create_display_points(contour);
-
         } catch (Exception e1) {
             System.out.println("Error " + e1.toString());
             JOptionPane.showMessageDialog(null, "Error: " + e1.toString());
@@ -109,7 +131,6 @@ public final class GcodeAction implements ActionListener {
 //            System.out.println("x=" + p.x() + ", y=" + p.y());
 //
 //        }
-
         // Update the Contour
         Set<TopComponent> windows = org.openide.windows.TopComponent.getRegistry().getOpened();
         ContourTopComponent panel = null;
