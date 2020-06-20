@@ -26,8 +26,6 @@ import org.openide.windows.TopComponent;
 import java.util.Set;
 
 import javax.swing.text.JTextComponent;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
@@ -56,7 +54,7 @@ public final class GcodeAction implements ActionListener {
     //private LineCookie context;
     //private JTextComponent editor;
     // private StyledDocument document;
-    private String selectedText;
+    //private String selectedText;
     //private String stringToBeInserted;
 
     @Override
@@ -74,15 +72,15 @@ public final class GcodeAction implements ActionListener {
 //                }
 //                System.out.println(doc.getLength());
 
-        this.selectedText = ed.getSelectedText();
-
-        System.out.println("Selected Text:");
-        System.out.println(this.selectedText);
-        if (selectedText == null) {
-            JOptionPane.showMessageDialog(null, "no selected G-Code");
-            return;
-        }               // convert String into InputStream
-        InputStream is = new ByteArrayInputStream(this.selectedText.getBytes());
+//        this.selectedText = ed.getSelectedText();
+//
+//        System.out.println("Selected Text:");
+//        System.out.println(this.selectedText);
+//        if (selectedText == null) {
+//            JOptionPane.showMessageDialog(null, "no selected G-Code");
+//            return;
+//        }               // convert String into InputStream
+        //InputStream is = new ByteArrayInputStream(this.selectedText.getBytes());
 
         // parse the String
         //FileInputStream is;

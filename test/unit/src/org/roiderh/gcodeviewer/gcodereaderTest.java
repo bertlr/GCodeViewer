@@ -1,13 +1,21 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 by Herbert Roider <herbert@roider.at>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.roiderh.gcodeviewer;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import math.geom2d.Point2D;
@@ -45,60 +53,60 @@ public class gcodereaderTest {
 
     /**
      * Test of read method, of class gcodereader.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testRead() throws Exception {
-        System.out.println("read");
-        String gcode = "G0 X0 Z2\nG3 X0 Z0 CR=1\nG1 X4 RND=1\nG1 Z-2\n";
         ArrayList<String> lines = new ArrayList<>();
-        lines.add("G0 X0 Z2");
-        lines.add("G3 X0 Z0 CR=1");
-        lines.add("G1 X4 RND=1");
-        lines.add("G1 Z-2");
-        InputStream is = new ByteArrayInputStream(gcode.getBytes(StandardCharsets.UTF_8));
+        lines.add("G0 X0 Z2 R1=2.4;COMMENT");
+        lines.add("LINEMARK: G3 X0 Z=(R1-2.4) CR=1\n");
+        lines.add("M3 S1000");
+        lines.add("N100 G1 RND=1 X=IC(4)");
+        lines.add("G1 Z-2\n");
+
         gcodereader instance = new gcodereader();
-        LinkedList<contourelement> expResult = null;
         LinkedList<contourelement> result = instance.read(0, lines);
-                //contourelement current_ce = null;
+        instance.calc_contour(result);
 
         // calculate the transitions elements and the result vertexes and tangent points.
         // Also add points to the display contour, which is simple a chain of lines.
         for (int i = 0; i < result.size(); i++) {
-            System.out.println("Zeile " + String.valueOf(i));
-            System.out.println(result.get(i).start.toString());
-            System.out.println(result.get(i).end.toString());
+            contourelement ce;
+            ce = result.get(i);
+            System.out.println("i: " + String.valueOf(i) + ", Zeile: " + ce.linenumber + ", line: " + ce.line);
+
+            System.out.println(ce.start.toString());
+            System.out.println(ce.end.toString());
             switch (i) {
 
                 case 1:
-                    System.out.println(result.get(i).curve.asPolyline(2).vertex(1).toString());
+                    test_point(new Point2D(2, 0), ce.start);
+                    System.out.println(ce.curve.asPolyline(2).vertex(1).toString());
                     // point on the circle:
-                    test_point(new Point2D(1, 1), result.get(i).curve.asPolyline(2).vertex(1));
+                    test_point(new Point2D(1, 1), ce.curve.asPolyline(2).vertex(1));
+
+                    test_point(new Point2D(0, 0), ce.end);
                     break;
 
-
-
                 case 2:
-                    test_point(new Point2D(0, 0), result.get(i).start);
-                    test_point(new Point2D(0, 1), result.get(i).end);
+                    test_point(new Point2D(0, 0), ce.start);
+                    test_point(new Point2D(0, 1), ce.end);
+                    test_point(new Point2D(-1, 2), ce.transition_curve.lastPoint());
 
                     break;
                 case 3:
-                    test_point(new Point2D(-1, 2), result.get(i).start);
-                    test_point(new Point2D(-2, 2), result.get(i).end);
+                    test_point(new Point2D(-1, 2), ce.start);
+                    test_point(new Point2D(-2, 2), ce.end);
 
                     break;
                 case 4:
-                    test_point(new Point2D(-2, 2), result.get(i).start);
-                    test_point(new Point2D(-2, 2), result.get(i).end);
+                    test_point(new Point2D(-2, 2), ce.start);
+                    test_point(new Point2D(-2, 2), ce.end);
 
                     break;
 
-
             }
-//            Point2D start = result.get(i).start.getX();
-//            Point2D end;
-//            start = ce.start
-//            
 
         }
 

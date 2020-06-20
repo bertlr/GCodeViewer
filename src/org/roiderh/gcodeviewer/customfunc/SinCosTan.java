@@ -49,6 +49,7 @@ public class SinCosTan extends PostfixMathCommand {
      *
      */
     @SuppressWarnings("unchecked")
+    @Override
     public void run(Stack inStack) throws ParseException {
 
         // check the stack
@@ -124,7 +125,7 @@ public class SinCosTan extends PostfixMathCommand {
        }
 
         // push the result on the inStack
-        inStack.push(new Double(r));
+        inStack.push(r);
 
     }
 }
