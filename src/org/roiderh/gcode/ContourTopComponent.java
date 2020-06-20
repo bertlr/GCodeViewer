@@ -16,7 +16,6 @@
  */
 package org.roiderh.gcode;
 
-//import org.roiderh.gcode.Bundle;
 import java.awt.BorderLayout;
 import java.util.LinkedList;
 import javafx.application.Platform;
@@ -30,7 +29,7 @@ import org.roiderh.gcodeviewer.Toolpath;
 import org.roiderh.gcodeviewer.contourelement;
 
 /**
- * Top component which displays something.
+ * Top component which displays the g-code contour.
  */
 @ConvertAsProperties(
         dtd = "-//org.roiderh.gcode//Contour//EN",
@@ -122,8 +121,7 @@ public final class ContourTopComponent extends TopComponent {
     }
 
     public void drawGraph() {
-        //System.out.println("hallo ContourComponent");
-
+      
         Platform.runLater(new Runnable() {
             @Override
             public void run() {

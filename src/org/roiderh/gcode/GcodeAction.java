@@ -21,10 +21,8 @@ import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-
 import org.openide.windows.TopComponent;
 import java.util.Set;
-
 import javax.swing.text.JTextComponent;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -51,12 +49,6 @@ import org.roiderh.gcodeviewer.contourelement;
 
 public final class GcodeAction implements ActionListener {
 
-    //private LineCookie context;
-    //private JTextComponent editor;
-    // private StyledDocument document;
-    //private String selectedText;
-    //private String stringToBeInserted;
-
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -65,36 +57,11 @@ public final class GcodeAction implements ActionListener {
             JOptionPane.showMessageDialog(null, "Error: no open editor");
             return;
         }
-//                Document doc = ed.getDocument();
-//                if (doc == null) {
-//                        JOptionPane.showMessageDialog(null, "No open Document");
-//                        return;
-//                }
-//                System.out.println(doc.getLength());
 
-//        this.selectedText = ed.getSelectedText();
-//
-//        System.out.println("Selected Text:");
-//        System.out.println(this.selectedText);
-//        if (selectedText == null) {
-//            JOptionPane.showMessageDialog(null, "no selected G-Code");
-//            return;
-//        }               // convert String into InputStream
-        //InputStream is = new ByteArrayInputStream(this.selectedText.getBytes());
-
-        // parse the String
-        //FileInputStream is;
-        //LinkedList<Point2D> disp = null;
         LinkedList<contourelement> contour;
         try {
 
             gcodereader gr = new gcodereader();
-//            contour = gr.read(is);
-//            if (contour.isEmpty()) {
-//                return;
-//            }
-//            gr.calc_contour(contour);
-
             int start_offset = ed.getSelectionStart();
             int end_offset = ed.getSelectionEnd();
             Document doc = ed.getDocument();
@@ -102,8 +69,6 @@ public final class GcodeAction implements ActionListener {
             int start_index = root.getElementIndex(start_offset);
             int end_index = root.getElementIndex(end_offset);
             int lineIndex = 0;
-            //int elCount = root.getElementCount();
-            //int count = 0;
             ArrayList<String> lines = new ArrayList<>();
 
             for (lineIndex = start_index; lineIndex <= end_index; lineIndex++) {
@@ -116,7 +81,6 @@ public final class GcodeAction implements ActionListener {
             }
             contour = gr.read(start_index, lines);
             gr.calc_contour(contour);
-            //disp = gr.create_display_points(contour);
         } catch (Exception e1) {
             System.out.println("Error " + e1.toString());
             JOptionPane.showMessageDialog(null, "Error: " + e1.toString());
@@ -124,11 +88,6 @@ public final class GcodeAction implements ActionListener {
 
         }
 
-//        System.out.println("ready calculated Contur:");
-//        for (Point2D p : disp) {
-//            System.out.println("x=" + p.x() + ", y=" + p.y());
-//
-//        }
         // Update the Contour
         Set<TopComponent> windows = org.openide.windows.TopComponent.getRegistry().getOpened();
         ContourTopComponent panel = null;
