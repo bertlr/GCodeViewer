@@ -22,7 +22,7 @@ jobs:
     - uses: actions/setup-java@v4
       name: Set up JDK
       with:
-        java-version: '22'
+        java-version: '21'
         distribution: 'temurin'
         java-package: 'jdk+fx'
     
